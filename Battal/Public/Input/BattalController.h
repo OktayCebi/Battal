@@ -75,6 +75,16 @@ private:
 	TObjectPtr<UInputAction> InteractAction;
 
 	void Interact();
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> EquipDaggerAction;
+
+	void EquipDagger();
+	FTimerHandle EquipHandle;
+	UFUNCTION()
+	void EquipAttachFunction();
+	UFUNCTION()
+	void UnArmAttachFunction();
 	///////////////////INPUT ACTIONS AND BIND FUNCTIONS////////////////
 
 	////////////////DODGE SECTION///////////////////

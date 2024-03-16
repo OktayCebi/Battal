@@ -13,6 +13,8 @@ UCLASS()
 class BATTAL_API ADagger : public AWeaponBase
 {
 	GENERATED_BODY()
-
+	
+public:
 	ADagger();
+	
 };

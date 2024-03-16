@@ -16,12 +16,12 @@ class BATTAL_API AItemBase : public AActor
 public:	
 	AItemBase();
 
-protected:
-	virtual void BeginPlay() override;
-
 	UPROPERTY(EditAnywhere, Category="Essentials")
 	TObjectPtr<UStaticMeshComponent> Body;
 
+protected:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY(EditAnywhere, Category="Essentials")
 	TObjectPtr<USphereComponent> Sphere;
 
@@ -34,5 +34,6 @@ protected:
 public:
 	
 	virtual void Tick(float DeltaTime) override;
+	
 
 };

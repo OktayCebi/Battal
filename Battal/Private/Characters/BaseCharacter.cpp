@@ -14,6 +14,7 @@ ABaseCharacter::ABaseCharacter()
 	SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
 	LastActionState = GetActionState();
 	OverlappingItem = nullptr;
+	Weapon = nullptr;
 }
 
 

@@ -22,11 +22,16 @@ public:
 
 	UPROPERTY()
 	EWeaponStanceState SelfStance;
-	
-protected:
 
 	UPROPERTY(EditAnywhere, Category="Essentials")
 	TObjectPtr<UStaticMeshComponent> SecondBody;
+
+	UPROPERTY()
+	float EquipSeconds;
+
+	UPROPERTY()
+	float UnArmSeconds;
+protected:
 	
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) override;
 	

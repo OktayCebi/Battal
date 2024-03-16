@@ -9,6 +9,9 @@ AWeaponBase::AWeaponBase()
 	SecondBody = CreateDefaultSubobject<UStaticMeshComponent>("SecondBody");
 	SecondBody->SetupAttachment(Body);
 	SecondBody->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	EquipSeconds = 0.f;
+	UnArmSeconds = 0.f;
 }
 
 void AWeaponBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

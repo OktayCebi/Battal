@@ -7,6 +7,7 @@
 #include "Game/Status.h"
 #include "BaseCharacter.generated.h"
 
+class AWeaponBase;
 class AItemBase;
 UCLASS()
 class BATTAL_API ABaseCharacter : public ACharacter
@@ -19,6 +20,9 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<AItemBase> OverlappingItem;
+
+	UPROPERTY()
+	TObjectPtr<AWeaponBase> Weapon; 
 	
 protected:
 
@@ -45,4 +49,5 @@ public:
 	FORCEINLINE EWeaponStanceState GetWeaponStanceState() const {return WeaponStanceState;}
 	FORCEINLINE EWeaponStanceState SetWeaponStanceState(EWeaponStanceState const NewStance) {return WeaponStanceState = NewStance;}
 	FORCEINLINE void SetOverlappingItem(AItemBase* NewItem) {OverlappingItem = NewItem;}
+	FORCEINLINE void SetWeapon(AWeaponBase* NewWeapon) {Weapon = NewWeapon;}
 };

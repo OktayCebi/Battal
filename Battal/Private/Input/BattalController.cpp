@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "Characters/BattalCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Items/Weapons/Dagger.h"
 #include "Items/Weapons/WeaponBase.h"
 
 
@@ -45,6 +46,7 @@ void ABattalController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(StopSprintAction, ETriggerEvent::Triggered, this, &ABattalController::StopSprint);
 	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ABattalController::Dodge);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ABattalController::Interact);
+	EnhancedInputComponent->BindAction(EquipDaggerAction, ETriggerEvent::Triggered, this, &ABattalController::EquipDagger);
 }
 
 ////////////////MOVEMENT SECTION///////////////////
@@ -106,6 +108,7 @@ void ABattalController::StopSprint()
 }
 ////////////////MOVEMENT SECTION///////////////////
 
+
 ////////////////DODGE SECTION///////////////////
 void ABattalController::ZeroDodgeMontageNumber()
 {
@@ -159,6 +162,7 @@ void ABattalController::EndDodge()
 }
 ////////////////DODGE SECTION///////////////////
 
+
 ////////////////INTERACT SECTION///////////////////
 void ABattalController::Interact()
 {
@@ -168,6 +172,66 @@ void ABattalController::Interact()
 		Weapon->PickedUp(BattalCharacter->GetMesh(), FName("WeaponRightHandSocket"), FName("WeaponLeftHandSocket"));
 		BattalCharacter->SetWeaponStanceState(Weapon->SelfStance);
 		BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
+		BattalCharacter->SetWeapon(Weapon);
 	}
 }
 ////////////////INTERACT SECTION///////////////////
+
+
+///////////////EQUIP SECTION///////////////////
+void ABattalController::EquipAttachFunction()
+{
+	if (ADagger* Dagger = Cast<ADagger>(BattalCharacter->Weapon))
+	{
+		const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+		Dagger->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, FName("WeaponRightHandSocket"));
+		Dagger->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, FName("WeaponLeftHandSocket"));
+		GetWorldTimerManager().ClearTimer(EquipHandle);
+		EnableInput(this);
+	}
+}
+
+void ABattalController::UnArmAttachFunction()
+{
+	if (ADagger* Dagger = Cast<ADagger>(BattalCharacter->Weapon))
+	{
+		const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+		Dagger->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, FName("RightDaggerSocket"));
+		Dagger->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, FName("LeftDaggerSocket"));
+		GetWorldTimerManager().ClearTimer(EquipHandle);
+		EnableInput(this);
+	}
+}
+
+
+void ABattalController::EquipDagger()
+{
+	if (ADagger* Dagger = Cast<ADagger>(BattalCharacter->Weapon))
+	{
+		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+		{
+			if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_CommonStance)
+			{
+				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Dagger->EquipSeconds);
+				FName const DaggerSection;
+				AnimInstance->Montage_Play(BattalCharacter->EquipWeaponMontage);
+				AnimInstance->Montage_JumpToSection(DaggerSection, BattalCharacter->EquipWeaponMontage);
+				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_DaggerStance);
+				BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
+				DisableInput(this);
+			}
+			else if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_DaggerStance)
+			{
+				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Dagger->UnArmSeconds);
+				FName const DaggerSection;
+				AnimInstance->Montage_Play(BattalCharacter->UnArmWeaponMontage);
+				AnimInstance->Montage_JumpToSection(DaggerSection, BattalCharacter->UnArmWeaponMontage);
+				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
+				BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
+				DisableInput(this);
+			}
+		
+		}
+	}
+}
+///////////////EQUIP SECTION///////////////////
