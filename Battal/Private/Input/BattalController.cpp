@@ -119,7 +119,39 @@ void ABattalController::ZeroDodgeMontageNumber()
 
 void ABattalController::Dodge()
 {
-	if (CanDodge())
+	if (CanDodgeWithWeapon())
+	{
+		LastActionState = BattalCharacter->GetLastActionState();
+		BattalCharacter->SetActionState(EActionState::Eas_Dodging);
+		GetWorldTimerManager().SetTimer(DodgeTimerHandle, this, &ABattalController::EndDodge, EndDodgeTimeAmount);
+	
+		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Play(BattalCharacter->Weapon->DodgeMontage);
+			FName SectionName = FName();
+			switch (DodgeMontageNumber)
+			{
+			case 0:
+				SectionName = FName("Forward");
+				break;
+			case 1:
+				SectionName = FName("Left");
+				break;
+			case 2:
+				SectionName = FName("Right");
+				break;
+			case 3:
+				SectionName = FName("Back");
+				break;
+			default:
+				SectionName = FName("Back");
+				break;
+			}
+			AnimInstance->Montage_JumpToSection(SectionName, BattalCharacter->Weapon->DodgeMontage);
+		
+		}
+	}
+	else if (CanDodge())
 	{
 		LastActionState = BattalCharacter->GetLastActionState();
 		BattalCharacter->SetActionState(EActionState::Eas_Dodging);
@@ -184,8 +216,8 @@ void ABattalController::EquipAttachFunction()
 	if (ADagger* Dagger = Cast<ADagger>(BattalCharacter->Weapon))
 	{
 		const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-		Dagger->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, FName("WeaponRightHandSocket"));
-		Dagger->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, FName("WeaponLeftHandSocket"));
+		Dagger->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Dagger->HandSocketNameforBody);
+		Dagger->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Dagger->HandSocketNameforSecondBody);
 		GetWorldTimerManager().ClearTimer(EquipHandle);
 		EnableInput(this);
 	}
@@ -196,8 +228,8 @@ void ABattalController::UnArmAttachFunction()
 	if (ADagger* Dagger = Cast<ADagger>(BattalCharacter->Weapon))
 	{
 		const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-		Dagger->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, FName("RightDaggerSocket"));
-		Dagger->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, FName("LeftDaggerSocket"));
+		Dagger->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Dagger->SheatSocketNameforBody);
+		Dagger->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Dagger->SheatSocketNameforSecondBody);
 		GetWorldTimerManager().ClearTimer(EquipHandle);
 		EnableInput(this);
 	}
@@ -214,8 +246,8 @@ void ABattalController::EquipDagger()
 			{
 				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Dagger->EquipSeconds);
 				FName const DaggerSection;
-				AnimInstance->Montage_Play(BattalCharacter->EquipWeaponMontage);
-				AnimInstance->Montage_JumpToSection(DaggerSection, BattalCharacter->EquipWeaponMontage);
+				AnimInstance->Montage_Play(Dagger->EquipWeaponMontage);
+				AnimInstance->Montage_JumpToSection(DaggerSection, Dagger->EquipWeaponMontage);
 				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_DaggerStance);
 				BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
 				DisableInput(this);
@@ -224,8 +256,8 @@ void ABattalController::EquipDagger()
 			{
 				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Dagger->UnArmSeconds);
 				FName const DaggerSection;
-				AnimInstance->Montage_Play(BattalCharacter->UnArmWeaponMontage);
-				AnimInstance->Montage_JumpToSection(DaggerSection, BattalCharacter->UnArmWeaponMontage);
+				AnimInstance->Montage_Play(Dagger->UnArmWeaponMontage);
+				AnimInstance->Montage_JumpToSection(DaggerSection, Dagger->UnArmWeaponMontage);
 				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
 				BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
 				DisableInput(this);

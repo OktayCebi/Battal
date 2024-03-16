@@ -22,7 +22,11 @@ public:
 	TObjectPtr<AItemBase> OverlappingItem;
 
 	UPROPERTY()
-	TObjectPtr<AWeaponBase> Weapon; 
+	TObjectPtr<AWeaponBase> Weapon;
+
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> DodgeMontage;
+
 	
 protected:
 

@@ -92,6 +92,7 @@ private:
 	void Dodge();
 	void EndDodge();
 	UFUNCTION()
+	FORCEINLINE bool CanDodgeWithWeapon() {return BattalCharacter->GetActionState() != EActionState::Eas_Dodging && BattalCharacter->Weapon && BattalCharacter->GetCharacterState() == ECharacterState::ECS_Equipped;}
 	FORCEINLINE bool CanDodge() {return BattalCharacter->GetActionState() != EActionState::Eas_Dodging;}
 	UPROPERTY()
 	int32 DodgeMontageNumber;

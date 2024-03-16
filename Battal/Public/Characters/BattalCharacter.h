@@ -16,14 +16,5 @@ class BATTAL_API ABattalCharacter : public ABaseCharacter
 
 public:
 	ABattalCharacter();
-
-	UPROPERTY(EditDefaultsOnly, Category="Montages")
-	TObjectPtr<UAnimMontage> DodgeMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category="Montages")
-	TObjectPtr<UAnimMontage> EquipWeaponMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category="Montages")
-	TObjectPtr<UAnimMontage> UnArmWeaponMontage;
 	
 };

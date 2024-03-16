@@ -26,11 +26,32 @@ public:
 	UPROPERTY(EditAnywhere, Category="Essentials")
 	TObjectPtr<UStaticMeshComponent> SecondBody;
 
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> DodgeMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> EquipWeaponMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> UnArmWeaponMontage;
+
 	UPROPERTY()
 	float EquipSeconds;
 
 	UPROPERTY()
 	float UnArmSeconds;
+
+	UPROPERTY()
+	FName HandSocketNameforBody;
+
+	UPROPERTY()
+	FName HandSocketNameforSecondBody;
+
+	UPROPERTY()
+	FName SheatSocketNameforBody;
+
+	UPROPERTY()
+	FName SheatSocketNameforSecondBody;
 protected:
 	
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) override;

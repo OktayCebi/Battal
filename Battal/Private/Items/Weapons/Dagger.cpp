@@ -9,4 +9,9 @@ ADagger::ADagger()
 
 	EquipSeconds = 0.28f;
 	UnArmSeconds = 0.60f;
+
+	HandSocketNameforBody = ("WeaponRightHandSocket");
+	HandSocketNameforSecondBody = ("WeaponLeftHandSocket");
+	SheatSocketNameforBody = ("RightDaggerSocket");
+	SheatSocketNameforSecondBody = ("LeftDaggerSocket");
 }
