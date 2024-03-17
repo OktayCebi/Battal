@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "Characters/BattalCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Items/Weapons/Axe_Shield.h"
 #include "Items/Weapons/Dagger.h"
 #include "Items/Weapons/WeaponBase.h"
 
@@ -47,6 +48,7 @@ void ABattalController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ABattalController::Dodge);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ABattalController::Interact);
 	EnhancedInputComponent->BindAction(EquipDaggerAction, ETriggerEvent::Triggered, this, &ABattalController::EquipDagger);
+	EnhancedInputComponent->BindAction(EquipAxeAction, ETriggerEvent::Triggered, this, &ABattalController::EquipAxe);
 }
 
 ////////////////MOVEMENT SECTION///////////////////
@@ -201,7 +203,7 @@ void ABattalController::Interact()
 	if(BattalCharacter->OverlappingItem)
 	{
 		AWeaponBase* Weapon = Cast<AWeaponBase>(BattalCharacter->OverlappingItem);
-		Weapon->PickedUp(BattalCharacter->GetMesh(), FName("WeaponRightHandSocket"), FName("WeaponLeftHandSocket"));
+		Weapon->PickedUp(BattalCharacter->GetMesh(), Weapon->HandSocketNameforBody, Weapon->HandSocketNameforSecondBody);
 		BattalCharacter->SetWeaponStanceState(Weapon->SelfStance);
 		BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
 		BattalCharacter->SetWeapon(Weapon);
@@ -213,11 +215,11 @@ void ABattalController::Interact()
 ///////////////EQUIP SECTION///////////////////
 void ABattalController::EquipAttachFunction()
 {
-	if (ADagger* Dagger = Cast<ADagger>(BattalCharacter->Weapon))
+	if (AWeaponBase* Weapon = BattalCharacter->Weapon)
 	{
 		const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-		Dagger->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Dagger->HandSocketNameforBody);
-		Dagger->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Dagger->HandSocketNameforSecondBody);
+		Weapon->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->HandSocketNameforBody);
+		Weapon->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->HandSocketNameforSecondBody);
 		GetWorldTimerManager().ClearTimer(EquipHandle);
 		EnableInput(this);
 	}
@@ -225,11 +227,11 @@ void ABattalController::EquipAttachFunction()
 
 void ABattalController::UnArmAttachFunction()
 {
-	if (ADagger* Dagger = Cast<ADagger>(BattalCharacter->Weapon))
+	if (AWeaponBase* Weapon = BattalCharacter->Weapon)
 	{
 		const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-		Dagger->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Dagger->SheatSocketNameforBody);
-		Dagger->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Dagger->SheatSocketNameforSecondBody);
+		Weapon->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->SheatSocketNameforBody);
+		Weapon->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->SheatSocketNameforSecondBody);
 		GetWorldTimerManager().ClearTimer(EquipHandle);
 		EnableInput(this);
 	}
@@ -250,6 +252,7 @@ void ABattalController::EquipDagger()
 				AnimInstance->Montage_JumpToSection(DaggerSection, Dagger->EquipWeaponMontage);
 				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_DaggerStance);
 				BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
+				BattalCharacter->SetWeapon(Dagger);
 				DisableInput(this);
 			}
 			else if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_DaggerStance)
@@ -266,4 +269,35 @@ void ABattalController::EquipDagger()
 		}
 	}
 }
+
+void ABattalController::EquipAxe()
+{
+	if (AAxe_Shield* Axe = Cast<AAxe_Shield>(BattalCharacter->Weapon))
+	{
+		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+		{
+			if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_CommonStance)
+			{
+				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Axe->EquipSeconds);
+				AnimInstance->Montage_Play(Axe->EquipWeaponMontage);
+				AnimInstance->Montage_JumpToSection(FName ("AxeSection"), Axe->EquipWeaponMontage);
+				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_AxeStance);
+				BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
+				BattalCharacter->SetWeapon(Axe);
+				DisableInput(this);
+			}
+			else if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_AxeStance)
+			{
+				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Axe->UnArmSeconds);
+				AnimInstance->Montage_Play(Axe->UnArmWeaponMontage);
+				AnimInstance->Montage_JumpToSection(FName ("AxeSection"), Axe->UnArmWeaponMontage);
+				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
+				BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
+				DisableInput(this);
+			}
+		
+		}
+	}
+}
+
 ///////////////EQUIP SECTION///////////////////

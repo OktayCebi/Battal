@@ -80,6 +80,12 @@ private:
 	TObjectPtr<UInputAction> EquipDaggerAction;
 
 	void EquipDagger();
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> EquipAxeAction;
+
+	void EquipAxe();
+	
 	FTimerHandle EquipHandle;
 	UFUNCTION()
 	void EquipAttachFunction();

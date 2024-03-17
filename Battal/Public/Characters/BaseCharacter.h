@@ -21,7 +21,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<AItemBase> OverlappingItem;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AWeaponBase> Weapon;
 
 	UPROPERTY(EditDefaultsOnly, Category="Montages")
