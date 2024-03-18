@@ -49,6 +49,7 @@ void ABattalController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ABattalController::Interact);
 	EnhancedInputComponent->BindAction(EquipDaggerAction, ETriggerEvent::Triggered, this, &ABattalController::EquipDagger);
 	EnhancedInputComponent->BindAction(EquipAxeAction, ETriggerEvent::Triggered, this, &ABattalController::EquipAxe);
+	EnhancedInputComponent->BindAction(EquipDenemeAction, ETriggerEvent::Triggered, this, &ABattalController::EquipDeneme);
 }
 
 ////////////////MOVEMENT SECTION///////////////////
@@ -207,6 +208,7 @@ void ABattalController::Interact()
 		BattalCharacter->SetWeaponStanceState(Weapon->SelfStance);
 		BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
 		BattalCharacter->SetWeapon(Weapon);
+		BattalCharacter->Weapons.AddUnique(Weapon);
 	}
 }
 ////////////////INTERACT SECTION///////////////////
@@ -247,9 +249,8 @@ void ABattalController::EquipDagger()
 			if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_CommonStance)
 			{
 				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Dagger->EquipSeconds);
-				FName const DaggerSection;
 				AnimInstance->Montage_Play(Dagger->EquipWeaponMontage);
-				AnimInstance->Montage_JumpToSection(DaggerSection, Dagger->EquipWeaponMontage);
+				AnimInstance->Montage_JumpToSection(Dagger->EquipMontageSectionName, Dagger->EquipWeaponMontage);
 				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_DaggerStance);
 				BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
 				BattalCharacter->SetWeapon(Dagger);
@@ -258,9 +259,8 @@ void ABattalController::EquipDagger()
 			else if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_DaggerStance)
 			{
 				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Dagger->UnArmSeconds);
-				FName const DaggerSection;
 				AnimInstance->Montage_Play(Dagger->UnArmWeaponMontage);
-				AnimInstance->Montage_JumpToSection(DaggerSection, Dagger->UnArmWeaponMontage);
+				AnimInstance->Montage_JumpToSection(Dagger->EquipMontageSectionName, Dagger->UnArmWeaponMontage);
 				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
 				BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
 				DisableInput(this);
@@ -280,7 +280,7 @@ void ABattalController::EquipAxe()
 			{
 				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Axe->EquipSeconds);
 				AnimInstance->Montage_Play(Axe->EquipWeaponMontage);
-				AnimInstance->Montage_JumpToSection(FName ("AxeSection"), Axe->EquipWeaponMontage);
+				AnimInstance->Montage_JumpToSection(Axe->EquipMontageSectionName, Axe->EquipWeaponMontage);
 				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_AxeStance);
 				BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
 				BattalCharacter->SetWeapon(Axe);
@@ -290,7 +290,7 @@ void ABattalController::EquipAxe()
 			{
 				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Axe->UnArmSeconds);
 				AnimInstance->Montage_Play(Axe->UnArmWeaponMontage);
-				AnimInstance->Montage_JumpToSection(FName ("AxeSection"), Axe->UnArmWeaponMontage);
+				AnimInstance->Montage_JumpToSection(Axe->EquipMontageSectionName, Axe->UnArmWeaponMontage);
 				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
 				BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
 				DisableInput(this);
@@ -298,6 +298,37 @@ void ABattalController::EquipAxe()
 		
 		}
 	}
+}
+
+void ABattalController::EquipDeneme()
+{
+		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+		{
+			for (AWeaponBase* Weapon : BattalCharacter->Weapons)
+			{
+				if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_CommonStance)
+				{
+					GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Weapon->EquipSeconds);
+					AnimInstance->Montage_Play(Weapon->EquipWeaponMontage);
+					AnimInstance->Montage_JumpToSection(Weapon->EquipMontageSectionName, Weapon->EquipWeaponMontage);
+					BattalCharacter->SetWeaponStanceState(Weapon->SelfStance);
+					BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
+					BattalCharacter->SetWeapon(Weapon);
+					DisableInput(this);
+				}
+				else if (BattalCharacter->GetWeaponStanceState() != EWeaponStanceState::EwS_CommonStance)
+				{
+					GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Weapon->UnArmSeconds);
+					AnimInstance->Montage_Play(Weapon->UnArmWeaponMontage);
+					AnimInstance->Montage_JumpToSection(Weapon->EquipMontageSectionName, Weapon->UnArmWeaponMontage);
+					BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
+					BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
+					DisableInput(this);
+				}
+			}
+			
+		}
+	
 }
 
 ///////////////EQUIP SECTION///////////////////

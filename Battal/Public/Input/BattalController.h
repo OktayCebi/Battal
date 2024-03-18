@@ -85,6 +85,11 @@ private:
 	TObjectPtr<UInputAction> EquipAxeAction;
 
 	void EquipAxe();
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> EquipDenemeAction;
+
+	void EquipDeneme();
 	
 	FTimerHandle EquipHandle;
 	UFUNCTION()

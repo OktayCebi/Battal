@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Montages")
 	TObjectPtr<UAnimMontage> DodgeMontage;
 
+	UPROPERTY(BlueprintReadOnly)
+	TArray<AWeaponBase*> Weapons;
+
 	
 protected:
 

@@ -14,4 +14,5 @@ AAxe_Shield::AAxe_Shield()
 	HandSocketNameforSecondBody = ("ShieldHandSocket");
 	SheatSocketNameforBody = ("AxeSheatSocket");
 	SheatSocketNameforSecondBody = ("ShieldSheatSocket");
+	EquipMontageSectionName = ("AxeSection");
 }

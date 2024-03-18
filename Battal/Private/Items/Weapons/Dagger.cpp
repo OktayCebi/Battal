@@ -14,4 +14,5 @@ ADagger::ADagger()
 	HandSocketNameforSecondBody = ("WeaponLeftHandSocket");
 	SheatSocketNameforBody = ("RightDaggerSocket");
 	SheatSocketNameforSecondBody = ("LeftDaggerSocket");
+	EquipMontageSectionName = ("DaggerSection");
 }
