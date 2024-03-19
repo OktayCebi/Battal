@@ -15,6 +15,14 @@ ABattalController::ABattalController()
 {
 	DodgeMontageNumber = 0.f;
 	EndDodgeTimeAmount = 0.67f;
+	WeaponIndex = 0;
+}
+
+void ABattalController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	IndexCounter = BattalCharacter->Weapons.Num();
 }
 
 void ABattalController::BeginPlay()
@@ -32,6 +40,7 @@ void ABattalController::BeginPlay()
 	check(Subsystem);
 
 	Subsystem->AddMappingContext(PlayerContext, 0);
+	
 }
 
 void ABattalController::SetupInputComponent()
@@ -204,11 +213,21 @@ void ABattalController::Interact()
 	if(BattalCharacter->OverlappingItem)
 	{
 		AWeaponBase* Weapon = Cast<AWeaponBase>(BattalCharacter->OverlappingItem);
-		Weapon->PickedUp(BattalCharacter->GetMesh(), Weapon->HandSocketNameforBody, Weapon->HandSocketNameforSecondBody);
-		BattalCharacter->SetWeaponStanceState(Weapon->SelfStance);
-		BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
-		BattalCharacter->SetWeapon(Weapon);
-		BattalCharacter->Weapons.AddUnique(Weapon);
+
+		if(BattalCharacter->GetWeaponStanceState() != EWeaponStanceState::EwS_CommonStance)
+		{
+			Weapon->PickedUp(BattalCharacter->GetMesh(), Weapon->SheatSocketNameforBody, Weapon->SheatSocketNameforSecondBody);
+			BattalCharacter->Weapons.AddUnique(Weapon);
+		}
+		else
+		{
+			Weapon->PickedUp(BattalCharacter->GetMesh(), Weapon->HandSocketNameforBody, Weapon->HandSocketNameforSecondBody);
+			BattalCharacter->SetWeaponStanceState(Weapon->SelfStance);
+			BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
+			BattalCharacter->SetWeapon(Weapon);
+			BattalCharacter->Weapons.AddUnique(Weapon);
+		}
+		
 	}
 }
 ////////////////INTERACT SECTION///////////////////
@@ -302,32 +321,39 @@ void ABattalController::EquipAxe()
 
 void ABattalController::EquipDeneme()
 {
-		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+	if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+	{
+		if (WeaponIndex == BattalCharacter->Weapons.Num())
 		{
-			for (AWeaponBase* Weapon : BattalCharacter->Weapons)
-			{
-				if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_CommonStance)
-				{
-					GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Weapon->EquipSeconds);
-					AnimInstance->Montage_Play(Weapon->EquipWeaponMontage);
-					AnimInstance->Montage_JumpToSection(Weapon->EquipMontageSectionName, Weapon->EquipWeaponMontage);
-					BattalCharacter->SetWeaponStanceState(Weapon->SelfStance);
-					BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
-					BattalCharacter->SetWeapon(Weapon);
-					DisableInput(this);
-				}
-				else if (BattalCharacter->GetWeaponStanceState() != EWeaponStanceState::EwS_CommonStance)
-				{
-					GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Weapon->UnArmSeconds);
-					AnimInstance->Montage_Play(Weapon->UnArmWeaponMontage);
-					AnimInstance->Montage_JumpToSection(Weapon->EquipMontageSectionName, Weapon->UnArmWeaponMontage);
-					BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
-					BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
-					DisableInput(this);
-				}
-			}
-			
+			WeaponIndex = 0;
 		}
+
+		if(BattalCharacter->GetWeaponStanceState() != EWeaponStanceState::EwS_CommonStance)
+		{
+			GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, BattalCharacter->Weapon->UnArmSeconds);
+			AnimInstance->Montage_Play(BattalCharacter->Weapon->UnArmWeaponMontage);
+			AnimInstance->Montage_JumpToSection(BattalCharacter->Weapon->EquipMontageSectionName, BattalCharacter->Weapon->UnArmWeaponMontage);
+			BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
+			BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
+			DisableInput(this);
+		}
+
+		else
+		{
+			GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, BattalCharacter->Weapons[WeaponIndex]->EquipSeconds);
+			AnimInstance->Montage_Play(BattalCharacter->Weapons[WeaponIndex]->EquipWeaponMontage);
+			AnimInstance->Montage_JumpToSection(BattalCharacter->Weapons[WeaponIndex]->EquipMontageSectionName, BattalCharacter->Weapons[WeaponIndex]->EquipWeaponMontage);
+			BattalCharacter->SetWeaponStanceState(BattalCharacter->Weapons[WeaponIndex]->SelfStance);
+			BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
+			BattalCharacter->SetWeapon(BattalCharacter->Weapons[WeaponIndex]);
+			DisableInput(this);
+			WeaponIndex++;
+		}
+		
+			
+		
+		
+	}
 	
 }
 

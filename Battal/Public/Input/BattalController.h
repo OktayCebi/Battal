@@ -26,7 +26,13 @@ public:
 	UPROPERTY()
 	TObjectPtr<ABattalCharacter> BattalCharacter;
 
-	
+	UPROPERTY(BlueprintReadOnly)
+	int32 WeaponIndex;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 IndexCounter;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 protected:
 	virtual void BeginPlay() override;
