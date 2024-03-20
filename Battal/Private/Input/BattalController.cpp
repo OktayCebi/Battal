@@ -5,9 +5,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Characters/BattalCharacter.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Items/Weapons/Axe_Shield.h"
-#include "Items/Weapons/Dagger.h"
 #include "Items/Weapons/WeaponBase.h"
 
 
@@ -16,13 +15,6 @@ ABattalController::ABattalController()
 	DodgeMontageNumber = 0.f;
 	EndDodgeTimeAmount = 0.67f;
 	WeaponIndex = 0;
-}
-
-void ABattalController::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	IndexCounter = BattalCharacter->Weapons.Num();
 }
 
 void ABattalController::BeginPlay()
@@ -56,9 +48,7 @@ void ABattalController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(StopSprintAction, ETriggerEvent::Triggered, this, &ABattalController::StopSprint);
 	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ABattalController::Dodge);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ABattalController::Interact);
-	EnhancedInputComponent->BindAction(EquipDaggerAction, ETriggerEvent::Triggered, this, &ABattalController::EquipDagger);
-	EnhancedInputComponent->BindAction(EquipAxeAction, ETriggerEvent::Triggered, this, &ABattalController::EquipAxe);
-	EnhancedInputComponent->BindAction(EquipDenemeAction, ETriggerEvent::Triggered, this, &ABattalController::EquipDeneme);
+	EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ABattalController::Equip);
 }
 
 ////////////////MOVEMENT SECTION///////////////////
@@ -78,8 +68,6 @@ void ABattalController::Move(const FInputActionValue& InputActionValue)
 
 		////////BENİM KOD//////////////
 		ForVec = InputActionValue.Get<FVector2d>();
-		const float Forward = ForwardDirection.Length();
-		const float Right = RightDirection.Length();
 		if(BattalCharacter->GetCharacterMovement()->bOrientRotationToMovement != true)
 		{
 			if (ForVec.X > 0.5f && ForVec.X > ForVec.Y) {DodgeMontageNumber = 2.f, EndDodgeTimeAmount = 0.67f;}
@@ -226,6 +214,7 @@ void ABattalController::Interact()
 			BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
 			BattalCharacter->SetWeapon(Weapon);
 			BattalCharacter->Weapons.AddUnique(Weapon);
+			BattalCharacter->Weapon->Sphere->DestroyComponent();
 		}
 		
 	}
@@ -258,68 +247,7 @@ void ABattalController::UnArmAttachFunction()
 	}
 }
 
-
-void ABattalController::EquipDagger()
-{
-	if (ADagger* Dagger = Cast<ADagger>(BattalCharacter->Weapon))
-	{
-		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
-		{
-			if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_CommonStance)
-			{
-				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Dagger->EquipSeconds);
-				AnimInstance->Montage_Play(Dagger->EquipWeaponMontage);
-				AnimInstance->Montage_JumpToSection(Dagger->EquipMontageSectionName, Dagger->EquipWeaponMontage);
-				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_DaggerStance);
-				BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
-				BattalCharacter->SetWeapon(Dagger);
-				DisableInput(this);
-			}
-			else if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_DaggerStance)
-			{
-				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Dagger->UnArmSeconds);
-				AnimInstance->Montage_Play(Dagger->UnArmWeaponMontage);
-				AnimInstance->Montage_JumpToSection(Dagger->EquipMontageSectionName, Dagger->UnArmWeaponMontage);
-				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
-				BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
-				DisableInput(this);
-			}
-		
-		}
-	}
-}
-
-void ABattalController::EquipAxe()
-{
-	if (AAxe_Shield* Axe = Cast<AAxe_Shield>(BattalCharacter->Weapon))
-	{
-		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
-		{
-			if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_CommonStance)
-			{
-				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, Axe->EquipSeconds);
-				AnimInstance->Montage_Play(Axe->EquipWeaponMontage);
-				AnimInstance->Montage_JumpToSection(Axe->EquipMontageSectionName, Axe->EquipWeaponMontage);
-				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_AxeStance);
-				BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
-				BattalCharacter->SetWeapon(Axe);
-				DisableInput(this);
-			}
-			else if (BattalCharacter->GetWeaponStanceState() == EWeaponStanceState::EwS_AxeStance)
-			{
-				GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, Axe->UnArmSeconds);
-				AnimInstance->Montage_Play(Axe->UnArmWeaponMontage);
-				AnimInstance->Montage_JumpToSection(Axe->EquipMontageSectionName, Axe->UnArmWeaponMontage);
-				BattalCharacter->SetWeaponStanceState(EWeaponStanceState::EwS_CommonStance);
-				BattalCharacter->SetCharacterState(ECharacterState::ECS_Armed);
-				DisableInput(this);
-			}
-		
-		}
-	}
-}
-
-void ABattalController::EquipDeneme()
+void ABattalController::Equip()
 {
 	if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
 	{
@@ -328,7 +256,7 @@ void ABattalController::EquipDeneme()
 			WeaponIndex = 0;
 		}
 
-		if(BattalCharacter->GetWeaponStanceState() != EWeaponStanceState::EwS_CommonStance)
+		if(BattalCharacter->GetWeaponStanceState() != EWeaponStanceState::EwS_CommonStance && BattalCharacter->Weapon != nullptr)
 		{
 			GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::UnArmAttachFunction, BattalCharacter->Weapon->UnArmSeconds);
 			AnimInstance->Montage_Play(BattalCharacter->Weapon->UnArmWeaponMontage);
@@ -338,7 +266,7 @@ void ABattalController::EquipDeneme()
 			DisableInput(this);
 		}
 
-		else
+		else if(BattalCharacter->Weapon != nullptr)
 		{
 			GetWorldTimerManager().SetTimer(EquipHandle, this, &ABattalController::EquipAttachFunction, BattalCharacter->Weapons[WeaponIndex]->EquipSeconds);
 			AnimInstance->Montage_Play(BattalCharacter->Weapons[WeaponIndex]->EquipWeaponMontage);
@@ -349,12 +277,7 @@ void ABattalController::EquipDeneme()
 			DisableInput(this);
 			WeaponIndex++;
 		}
-		
-			
-		
-		
 	}
-	
 }
 
 ///////////////EQUIP SECTION///////////////////
