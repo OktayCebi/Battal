@@ -18,7 +18,8 @@ class BATTAL_API AWeaponBase : public AItemBase
 public:
 	AWeaponBase();
 
-	void PickedUp (USceneComponent* InParent, FName InSocketName, FName InSocketNameSecond);
+	UFUNCTION()
+	virtual void PickedUp (USceneComponent* InParent, FName InSocketName, FName InSocketNameSecond);
 
 	UPROPERTY()
 	EWeaponStanceState SelfStance;

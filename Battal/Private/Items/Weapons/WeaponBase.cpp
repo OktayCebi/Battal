@@ -27,6 +27,7 @@ void AWeaponBase::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 	Super::OnSphereEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 }
 
+
 void AWeaponBase::PickedUp(USceneComponent* InParent, const FName InSocketName, const FName InSocketNameSecond)
 {
 	const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);

@@ -229,7 +229,10 @@ void ABattalController::EquipAttachFunction()
 	{
 		const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 		Weapon->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->HandSocketNameforBody);
-		Weapon->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->HandSocketNameforSecondBody);
+		if(Weapon->SecondBody)
+		{
+			Weapon->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->HandSocketNameforSecondBody);
+		}
 		GetWorldTimerManager().ClearTimer(EquipHandle);
 		EnableInput(this);
 	}
@@ -241,7 +244,10 @@ void ABattalController::UnArmAttachFunction()
 	{
 		const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 		Weapon->Body->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->SheatSocketNameforBody);
-		Weapon->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->SheatSocketNameforSecondBody);
+		if(Weapon->SecondBody)
+		{
+			Weapon->SecondBody->AttachToComponent(BattalCharacter->GetMesh(), TransformRules, Weapon->SheatSocketNameforSecondBody);
+		}
 		GetWorldTimerManager().ClearTimer(EquipHandle);
 		EnableInput(this);
 	}
