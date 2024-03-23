@@ -30,6 +30,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<AWeaponBase*> Weapons;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USkeletalMeshComponent> Body;
+
 	
 protected:
 
