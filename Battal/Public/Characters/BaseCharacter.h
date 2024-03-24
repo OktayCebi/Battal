@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USkeletalMeshComponent> Body;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USkeletalMeshComponent> Arms;
+
 	
 protected:
 
