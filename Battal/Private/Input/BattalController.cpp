@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "Characters/BattalCharacter.h"
 #include "Components/SphereComponent.h"
+#include "Elements/Framework/TypedElementQueryBuilder.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Items/Weapons/WeaponBase.h"
 
@@ -15,6 +16,8 @@ ABattalController::ABattalController()
 	DodgeMontageNumber = 0.f;
 	EndDodgeTimeAmount = 0.67f;
 	WeaponIndex = 0;
+	WasAttackSaved = false;
+	LightAttackCounter = 0;
 }
 
 void ABattalController::BeginPlay()
@@ -45,12 +48,13 @@ void ABattalController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ABattalController::ZeroDodgeMontageNumber);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABattalController::Look);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ABattalController::Sprint);
-	EnhancedInputComponent->BindAction(StopSprintAction, ETriggerEvent::Triggered, this, &ABattalController::StopSprint);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ABattalController::StopSprint);
 	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ABattalController::Dodge);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ABattalController::Interact);
 	EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ABattalController::Equip);
 	EnhancedInputComponent->BindAction(GuardAction, ETriggerEvent::Triggered, this, &ABattalController::Guard);
 	EnhancedInputComponent->BindAction(GuardAction, ETriggerEvent::Completed, this, &ABattalController::ExitGuard);
+	EnhancedInputComponent->BindAction(LightAttackAction, ETriggerEvent::Triggered, this, &ABattalController::LightAttack);
 }
 
 ////////////////MOVEMENT SECTION///////////////////
@@ -95,7 +99,7 @@ void ABattalController::Look(const FInputActionValue& InputActionValue)
 
 void ABattalController::Sprint()
 {
-	if (BattalCharacter)
+	if (BattalCharacter && BattalCharacter->GetActionState() != EActionState::Eas_Guarding)
 	{
 		BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 700.f;
 	}
@@ -103,7 +107,11 @@ void ABattalController::Sprint()
 
 void ABattalController::StopSprint()
 {
-	if (BattalCharacter)
+	if (BattalCharacter->GetActionState() == EActionState::Eas_Guarding)
+	{
+		BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 200.f;
+	}
+	else if(BattalCharacter)
 	{
 		BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	}
@@ -315,3 +323,63 @@ void ABattalController::ExitGuard()
 	BattalCharacter->IsGuarding = false;
 }
 //////////////GUARd SECTION///////////////////
+
+///////////LIGHT ATTACK SECTION//////////////
+void ABattalController::LightAttack()
+{
+	if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+	{
+		if(CanAttack() && BattalCharacter->GetCharacterState() == ECharacterState::ECS_Equipped)
+		{
+			BattalCharacter->SetActionState(EActionState::Eas_Attacking);
+			LightAttackCounter++;
+			AnimInstance->Montage_Play(BattalCharacter->Weapon->LightAttackMontage);
+			FName SectionName = FName();
+			switch (LightAttackCounter)
+			{
+			case 1 :
+				SectionName = FName("Attack1");
+				break;
+			case 2:
+				SectionName = FName("Attack2");
+				break;
+			case 3:
+				SectionName = FName("Attack3");
+				break;
+			case 4:
+				SectionName = FName("Attack4");
+				break;
+			default:
+				SectionName = FName("Attack1");
+				break;
+			}
+			AnimInstance->Montage_JumpToSection(SectionName, BattalCharacter->Weapon->LightAttackMontage);
+		}
+		if(CanAttack() && BattalCharacter->GetCharacterState() != ECharacterState::ECS_Equipped)
+		{
+			BattalCharacter->SetActionState(EActionState::Eas_Attacking);
+			LightAttackCounter++;
+			AnimInstance->Montage_Play(BattalCharacter->LightAttackMontage);
+			FName SectionName = FName();
+			switch (LightAttackCounter)
+			{
+			case 1 :
+				SectionName = FName("Attack1");
+				break;
+			case 2:
+				SectionName = FName("Attack2");
+				break;
+			case 3:
+				SectionName = FName("Attack3");
+				break;
+			case 4:
+				SectionName = FName("Attack4");
+				break;
+			default:
+				SectionName = FName("Attack1");
+				break;
+			}
+			AnimInstance->Montage_JumpToSection(SectionName, BattalCharacter->LightAttackMontage);
+		}
+	}
+}

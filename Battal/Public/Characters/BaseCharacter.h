@@ -39,6 +39,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USkeletalMeshComponent> Arms;
 
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> LightAttackMontage;
+
 	
 protected:
 

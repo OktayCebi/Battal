@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Montages")
 	TObjectPtr<UAnimMontage> UnArmWeaponMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> LightAttackMontage;
+
 	UPROPERTY()
 	float EquipSeconds;
 

@@ -15,7 +15,8 @@ enum class EActionState : uint8
 	Eas_Idling UMETA(DisplayName = "Idling"),
 	Eas_Moving UMETA (DisplayName = "Moving"),
 	Eas_Dodging UMETA (DisplayName = "Dodging"),
-	Eas_Guarding UMETA (DisplayName = "Guarding")
+	Eas_Guarding UMETA (DisplayName = "Guarding"),
+	Eas_Attacking UMETA (DisplayName = "Attacking")
 };
 
 UENUM(BlueprintType)
