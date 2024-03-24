@@ -27,15 +27,16 @@ public:
 	UPROPERTY()
 	TObjectPtr<ABattalCharacter> BattalCharacter;
 
+	UPROPERTY(BlueprintReadOnly)
+	EActionState LastActionState;
+
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupInputComponent() override;
 
 private:
-
-	UPROPERTY()
-	EActionState LastActionState;
+	
 		///////////////////MOVEMENT and INTERACT SECTION////////////////
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> PlayerContext;
@@ -100,4 +101,10 @@ private:
 	UFUNCTION()
 	void UnArmAttachFunction();
 	////////////////EQUIP SECTION///////////////////
+	
+	////////////////GUARD SECTION//////////////////
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> GuardAction;
+	void Guard();
+	void ExitGuard();
 };

@@ -18,6 +18,9 @@ public:
 	
 	ABaseCharacter();
 
+	UPROPERTY(BlueprintReadOnly)
+	bool IsGuarding;
+
 	UPROPERTY()
 	TObjectPtr<AItemBase> OverlappingItem;
 

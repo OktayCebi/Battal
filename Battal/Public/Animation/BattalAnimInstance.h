@@ -41,5 +41,8 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Movement")
 	float StopDistance;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool IsGuarding;
 	
 };

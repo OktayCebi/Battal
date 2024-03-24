@@ -23,6 +23,7 @@ void UBattalAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(BattalMovement->Velocity);
 		IsFallingC = BattalMovement->IsFalling();
+		IsGuarding = BattalCharacter->IsGuarding;
 		IsAccelerating = UKismetMathLibrary::VSizeXY(BattalMovement->GetCurrentAcceleration());
 		if(UKismetMathLibrary::NearlyEqual_FloatFloat(IsAccelerating, 0.f, 0.001f))
 		{

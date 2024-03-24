@@ -49,6 +49,8 @@ void ABattalController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ABattalController::Dodge);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ABattalController::Interact);
 	EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ABattalController::Equip);
+	EnhancedInputComponent->BindAction(GuardAction, ETriggerEvent::Triggered, this, &ABattalController::Guard);
+	EnhancedInputComponent->BindAction(GuardAction, ETriggerEvent::Completed, this, &ABattalController::ExitGuard);
 }
 
 ////////////////MOVEMENT SECTION///////////////////
@@ -187,8 +189,18 @@ void ABattalController::Dodge()
 
 void ABattalController::EndDodge()
 {
-	BattalCharacter->SetActionState(LastActionState);
-	GetWorldTimerManager().ClearTimer(DodgeTimerHandle);
+	if(LastActionState == EActionState::Eas_Guarding && BattalCharacter->IsGuarding == false)
+	{
+		BattalCharacter->SetActionState(EActionState::Eas_Idling);
+		LastActionState = EActionState::Eas_Idling;
+		GetWorldTimerManager().ClearTimer(DodgeTimerHandle);
+	}
+	else
+	{
+		BattalCharacter->SetActionState(LastActionState);
+		GetWorldTimerManager().ClearTimer(DodgeTimerHandle);
+	}
+	
 	
 	
 }
@@ -287,3 +299,19 @@ void ABattalController::Equip()
 }
 
 ///////////////EQUIP SECTION///////////////////
+
+//////////////GUARd SECTION///////////////////
+void ABattalController::Guard()
+{
+	BattalCharacter->SetActionState(EActionState::Eas_Guarding);
+	BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 200.f;
+	BattalCharacter->IsGuarding = true;
+}
+
+void ABattalController::ExitGuard()
+{
+	BattalCharacter->SetActionState(EActionState::Eas_Idling);
+	BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	BattalCharacter->IsGuarding = false;
+}
+//////////////GUARd SECTION///////////////////

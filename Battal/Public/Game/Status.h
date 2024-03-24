@@ -14,7 +14,8 @@ enum class EActionState : uint8
 {
 	Eas_Idling UMETA(DisplayName = "Idling"),
 	Eas_Moving UMETA (DisplayName = "Moving"),
-	Eas_Dodging UMETA (DisplayName = "Dodging")
+	Eas_Dodging UMETA (DisplayName = "Dodging"),
+	Eas_Guarding UMETA (DisplayName = "Guarding")
 };
 
 UENUM(BlueprintType)
@@ -23,5 +24,6 @@ enum class EWeaponStanceState : uint8
 	EwS_CommonStance UMETA(DisplayName = "CommonStance"),
 	EwS_DaggerStance UMETA(DisplayName = "DaggerStance"),
 	EwS_AxeStance UMETA (DisplayName = "AxeStance"),
-	EwS_GreatSwordStance UMETA (DisplayName = "GreatSwordStance")
+	EwS_GreatSwordStance UMETA (DisplayName = "GreatSwordStance"),
+	EwS_GuardStance UMETA (DisplayName = "GuardStance")
 };

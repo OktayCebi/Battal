@@ -15,6 +15,7 @@ ABaseCharacter::ABaseCharacter()
 	LastActionState = GetActionState();
 	OverlappingItem = nullptr;
 	Weapon = nullptr;
+	IsGuarding = false;
 	
 	Body = CreateDefaultSubobject<USkeletalMeshComponent>("Body");
 	Body->SetupAttachment(GetMesh());
