@@ -12,6 +12,7 @@ AWeaponBase::AWeaponBase()
 
 	EquipSeconds = 0.f;
 	UnArmSeconds = 0.f;
+	LightAttackComboCounter = 0;
 }
 
 void AWeaponBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

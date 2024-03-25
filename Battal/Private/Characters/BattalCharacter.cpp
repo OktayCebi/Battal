@@ -5,4 +5,5 @@
 
 ABattalCharacter::ABattalCharacter()
 {
+	LightAttackComboCounter = 3;
 }

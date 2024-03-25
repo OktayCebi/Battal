@@ -13,6 +13,8 @@ AGreatSword::AGreatSword()
 	HandSocketNameforBody = ("GreatSwordHandSocket");
 	SheatSocketNameforBody = ("GreatSwordSheatSocket");
 	EquipMontageSectionName = ("GreatSwordSection");
+
+	LightAttackComboCounter = 3;
 }
 
 void AGreatSword::PickedUp(USceneComponent* InParent, FName InSocketName, FName InSocketNameSecond)

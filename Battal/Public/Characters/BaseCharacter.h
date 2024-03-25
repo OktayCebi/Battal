@@ -42,6 +42,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Montages")
 	TObjectPtr<UAnimMontage> LightAttackMontage;
 
+	UPROPERTY()
+	int32 LightAttackComboCounter;
+
 	
 protected:
 

@@ -30,6 +30,12 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	EActionState LastActionState;
 
+	UPROPERTY(BlueprintReadOnly)
+	int32 LightAttackCounter;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool WasAttackSaved;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -110,7 +116,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> LightAttackAction;
 	void LightAttack();
-	FORCEINLINE bool CanAttack() {return BattalCharacter->GetActionState() != EActionState::Eas_Dodging;}
-	bool WasAttackSaved;
-	int32 LightAttackCounter;
+	FORCEINLINE bool CanAttack() {return BattalCharacter->GetActionState() != EActionState::Eas_Dodging && BattalCharacter->GetActionState() != EActionState::Eas_Attacking;}
+	
+	FTimerHandle EndAttackTimerHandle;
+	void EndLightAttack();
+	
 };

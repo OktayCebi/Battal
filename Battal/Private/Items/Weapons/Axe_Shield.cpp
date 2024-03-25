@@ -15,4 +15,6 @@ AAxe_Shield::AAxe_Shield()
 	SheatSocketNameforBody = ("AxeSheatSocket");
 	SheatSocketNameforSecondBody = ("ShieldSheatSocket");
 	EquipMontageSectionName = ("AxeSection");
+
+	LightAttackComboCounter = 4;
 }

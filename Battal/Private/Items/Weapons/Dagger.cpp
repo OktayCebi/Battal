@@ -15,4 +15,6 @@ ADagger::ADagger()
 	SheatSocketNameforBody = ("RightDaggerSocket");
 	SheatSocketNameforSecondBody = ("LeftDaggerSocket");
 	EquipMontageSectionName = ("DaggerSection");
+
+	LightAttackComboCounter = 3;
 }

@@ -40,6 +40,9 @@ public:
 	TObjectPtr<UAnimMontage> LightAttackMontage;
 
 	UPROPERTY()
+	int32 LightAttackComboCounter;
+
+	UPROPERTY()
 	float EquipSeconds;
 
 	UPROPERTY()

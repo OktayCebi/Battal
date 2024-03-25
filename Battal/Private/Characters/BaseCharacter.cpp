@@ -24,6 +24,8 @@ ABaseCharacter::ABaseCharacter()
 	Arms = CreateDefaultSubobject<USkeletalMeshComponent>("Arms");
 	Arms->SetupAttachment(GetMesh());
 	Arms->SetLeaderPoseComponent(GetMesh());
+
+	LightAttackComboCounter = 0;
 	
 }
 
