@@ -13,6 +13,8 @@ AWeaponBase::AWeaponBase()
 	EquipSeconds = 0.f;
 	UnArmSeconds = 0.f;
 	LightAttackComboCounter = 0;
+
+	LightComboWaitTimes.Insert(0.50f, 0);
 }
 
 void AWeaponBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

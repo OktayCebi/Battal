@@ -26,6 +26,8 @@ ABaseCharacter::ABaseCharacter()
 	Arms->SetLeaderPoseComponent(GetMesh());
 
 	LightAttackComboCounter = 0;
+
+	LightComboWaitTimes.Insert(0.5f, 0);
 	
 }
 

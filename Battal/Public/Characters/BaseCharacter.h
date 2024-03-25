@@ -45,6 +45,9 @@ public:
 	UPROPERTY()
 	int32 LightAttackComboCounter;
 
+	UPROPERTY()
+	TArray<float> LightComboWaitTimes;
+
 	
 protected:
 

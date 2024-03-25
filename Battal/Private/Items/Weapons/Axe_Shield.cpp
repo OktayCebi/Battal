@@ -17,4 +17,10 @@ AAxe_Shield::AAxe_Shield()
 	EquipMontageSectionName = ("AxeSection");
 
 	LightAttackComboCounter = 4;
+
+	LightComboWaitTimes.SetNum(4);
+	LightComboWaitTimes.Insert(0.66f, 0);
+	LightComboWaitTimes.Insert(0.53f, 1);
+	LightComboWaitTimes.Insert(0.77f, 2);
+	LightComboWaitTimes.Insert(2.69f, 3);
 }

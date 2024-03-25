@@ -15,6 +15,11 @@ AGreatSword::AGreatSword()
 	EquipMontageSectionName = ("GreatSwordSection");
 
 	LightAttackComboCounter = 3;
+
+	LightComboWaitTimes.SetNum(3);
+	LightComboWaitTimes.Insert(1.55f, 0);
+	LightComboWaitTimes.Insert(1.75, 1);
+	LightComboWaitTimes.Insert(2.59f, 2);
 }
 
 void AGreatSword::PickedUp(USceneComponent* InParent, FName InSocketName, FName InSocketNameSecond)
