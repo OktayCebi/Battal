@@ -311,16 +311,23 @@ void ABattalController::Equip()
 //////////////GUARd SECTION///////////////////
 void ABattalController::Guard()
 {
-	BattalCharacter->SetActionState(EActionState::Eas_Guarding);
-	BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 200.f;
-	BattalCharacter->IsGuarding = true;
+	if(CanGuard())
+	{
+		BattalCharacter->SetActionState(EActionState::Eas_Guarding);
+		BattalCharacter->GetMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+		BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 200.f;
+		BattalCharacter->IsGuarding = true;
+	}
 }
 
 void ABattalController::ExitGuard()
 {
-	BattalCharacter->SetActionState(EActionState::Eas_Idling);
-	BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	BattalCharacter->IsGuarding = false;
+	if(BattalCharacter->GetActionState() == EActionState::Eas_Guarding)
+	{
+		BattalCharacter->SetActionState(EActionState::Eas_Idling);
+		BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+		BattalCharacter->IsGuarding = false;
+	}
 }
 //////////////GUARd SECTION///////////////////
 

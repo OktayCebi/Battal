@@ -110,6 +110,7 @@ private:
 	TObjectPtr<UInputAction> GuardAction;
 	void Guard();
 	void ExitGuard();
+	bool CanGuard() {return BattalCharacter->GetActionState() != EActionState::Eas_Attacking && BattalCharacter->GetActionState() != EActionState::Eas_Dodging;}
 	////////////////GUARD SECTION//////////////////
 
 	////////////LIGHT ATTACK SECTION///////////////
