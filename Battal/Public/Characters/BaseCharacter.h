@@ -7,6 +7,7 @@
 #include "Game/Status.h"
 #include "BaseCharacter.generated.h"
 
+class UBoxComponent;
 class AWeaponBase;
 class AItemBase;
 UCLASS()
@@ -47,6 +48,7 @@ public:
 
 	UPROPERTY()
 	TArray<float> LightComboWaitTimes;
+
 
 	
 protected:

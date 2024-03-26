@@ -3,12 +3,31 @@
 
 #include "Items/Weapons/WeaponBase.h"
 
+#include "Components/BoxComponent.h"
+
 AWeaponBase::AWeaponBase()
 {
 	SelfStance = EWeaponStanceState::EwS_CommonStance;
 	SecondBody = CreateDefaultSubobject<UStaticMeshComponent>("SecondBody");
 	SecondBody->SetupAttachment(Body);
 	SecondBody->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	BodyWeaponBox = CreateDefaultSubobject<UBoxComponent>("BodyWeaponBox");
+	BodyWeaponBox->SetupAttachment(Body);
+
+	SecondBodyWeaponBox = CreateDefaultSubobject<UBoxComponent>("SecondBodyWeaponBox");
+	SecondBodyWeaponBox->SetupAttachment(SecondBody);
+
+	BodyStartLocation = CreateDefaultSubobject<USceneComponent>("BodyStartLocation");
+	BodyEndLocation = CreateDefaultSubobject<USceneComponent>("BodyEndLocation");
+	SecondBodyStartLocation = CreateDefaultSubobject<USceneComponent>("SecondBodyStartLocation");
+	SecondBodyEndLocation = CreateDefaultSubobject<USceneComponent>("SecondBodyEndLocation");
+
+	BodyStartLocation->SetupAttachment(BodyWeaponBox);
+	BodyEndLocation->SetupAttachment(BodyWeaponBox);
+	SecondBodyStartLocation->SetupAttachment(SecondBodyWeaponBox);
+	SecondBodyEndLocation->SetupAttachment(SecondBodyWeaponBox);
+	
 
 	EquipSeconds = 0.f;
 	UnArmSeconds = 0.f;

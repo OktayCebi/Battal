@@ -7,6 +7,7 @@
 #include "Items/ItemBase.h"
 #include "WeaponBase.generated.h"
 
+class UBoxComponent;
 /**
  * 
  */
@@ -65,6 +66,25 @@ public:
 
 	UPROPERTY()
 	FName EquipMontageSectionName;
+
+	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	TObjectPtr<UBoxComponent> BodyWeaponBox;
+
+	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	TObjectPtr<UBoxComponent> SecondBodyWeaponBox;
+
+	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	TObjectPtr<USceneComponent> BodyStartLocation;
+
+	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	TObjectPtr<USceneComponent> BodyEndLocation;
+
+	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	TObjectPtr<USceneComponent> SecondBodyStartLocation;
+
+	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	TObjectPtr<USceneComponent> SecondBodyEndLocation;
+	
 	
 protected:
 	

@@ -226,6 +226,7 @@ void ABattalController::Interact()
 		{
 			Weapon->PickedUp(BattalCharacter->GetMesh(), Weapon->SheatSocketNameforBody, Weapon->SheatSocketNameforSecondBody);
 			BattalCharacter->Weapons.AddUnique(Weapon);
+			Weapon->Sphere->DestroyComponent();
 		}
 		else
 		{

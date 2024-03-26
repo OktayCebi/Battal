@@ -19,7 +19,7 @@ ADagger::ADagger()
 	LightAttackComboCounter = 3;
 
 	LightComboWaitTimes.SetNum(3);
-	LightComboWaitTimes.Insert(0.44f, 0);
-	LightComboWaitTimes.Insert(0.30, 1);
+	LightComboWaitTimes.Insert(0.55f, 0);
+	LightComboWaitTimes.Insert(0.65, 1);
 	LightComboWaitTimes.Insert(1.23f, 2);
 }

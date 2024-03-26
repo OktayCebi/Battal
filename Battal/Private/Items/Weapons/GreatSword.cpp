@@ -3,6 +3,8 @@
 
 #include "Items/Weapons/GreatSword.h"
 
+#include "Components/BoxComponent.h"
+
 AGreatSword::AGreatSword()
 {
 	SelfStance = EWeaponStanceState::EwS_GreatSwordStance;
@@ -27,4 +29,5 @@ void AGreatSword::PickedUp(USceneComponent* InParent, FName InSocketName, FName 
 	const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	Body->AttachToComponent(InParent, TransformRules, InSocketName);
 	SecondBody->DestroyComponent();
+	SecondBodyWeaponBox->DestroyComponent();
 }

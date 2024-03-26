@@ -3,6 +3,8 @@
 
 #include "Characters/BaseCharacter.h"
 
+#include "Components/BoxComponent.h"
+
 
 ABaseCharacter::ABaseCharacter()
 {
