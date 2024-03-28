@@ -30,4 +30,6 @@ void AGreatSword::PickedUp(USceneComponent* InParent, FName InSocketName, FName 
 	Body->AttachToComponent(InParent, TransformRules, InSocketName);
 	SecondBody->DestroyComponent();
 	SecondBodyWeaponBox->DestroyComponent();
+	SecondBodyEndLocation->DestroyComponent();
+	SecondBodyStartLocation->DestroyComponent();
 }

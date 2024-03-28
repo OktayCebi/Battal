@@ -67,30 +67,35 @@ public:
 	UPROPERTY()
 	FName EquipMontageSectionName;
 
-	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	TObjectPtr<UBoxComponent> BodyWeaponBox;
 
-	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	TObjectPtr<UBoxComponent> SecondBodyWeaponBox;
 
-	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	TObjectPtr<USceneComponent> BodyStartLocation;
 
-	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	TObjectPtr<USceneComponent> BodyEndLocation;
 
-	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	TObjectPtr<USceneComponent> SecondBodyStartLocation;
 
-	UPROPERTY(EditAnywhere, Category="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	TObjectPtr<USceneComponent> SecondBodyEndLocation;
 	
 	
 protected:
+
+	virtual void BeginPlay() override;
 	
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) override;
 	
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+
+	UFUNCTION()
+	virtual void OnBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 	
 };
