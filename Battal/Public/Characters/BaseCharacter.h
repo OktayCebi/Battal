@@ -49,7 +49,6 @@ public:
 	UPROPERTY()
 	TArray<float> LightComboWaitTimes;
 
-
 	
 protected:
 

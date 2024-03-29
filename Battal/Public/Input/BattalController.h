@@ -74,8 +74,8 @@ private:
 	void Dodge();
 	void EndDodge();
 	UFUNCTION()
-	FORCEINLINE bool CanDodgeWithWeapon() {return BattalCharacter->GetActionState() != EActionState::Eas_Dodging && BattalCharacter->GetCharacterState() == ECharacterState::ECS_Equipped && BattalCharacter->GetMovementComponent()->IsFalling() == false;}
-	FORCEINLINE bool CanDodge() {return BattalCharacter->GetActionState() != EActionState::Eas_Dodging && BattalCharacter->GetMovementComponent()->IsFalling() == false;}
+	FORCEINLINE bool CanDodgeWithWeapon() {return BattalCharacter->GetActionState() != EActionState::Eas_Dodging && BattalCharacter->GetCharacterState() == ECharacterState::ECS_Equipped && BattalCharacter->GetActionState() != EActionState::Eas_Attacking && BattalCharacter->GetMovementComponent()->IsFalling() == false;}
+	FORCEINLINE bool CanDodge() {return BattalCharacter->GetActionState() != EActionState::Eas_Dodging && BattalCharacter->GetActionState() != EActionState::Eas_Attacking && BattalCharacter->GetMovementComponent()->IsFalling() == false;}
 	UPROPERTY()
 	int32 DodgeMontageNumber;
 	UPROPERTY()
@@ -109,6 +109,7 @@ private:
 	bool CanGuard() {return BattalCharacter->GetActionState() != EActionState::Eas_Attacking && BattalCharacter->GetActionState() != EActionState::Eas_Dodging;}
 	////////////////GUARD SECTION//////////////////
 
+	
 	////////////LIGHT ATTACK SECTION///////////////
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> LightAttackAction;

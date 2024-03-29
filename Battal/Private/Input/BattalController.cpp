@@ -231,9 +231,9 @@ void ABattalController::Interact()
 		else
 		{
 			Weapon->PickedUp(BattalCharacter->GetMesh(), Weapon->HandSocketNameforBody, Weapon->HandSocketNameforSecondBody);
+			BattalCharacter->SetWeapon(Weapon);
 			BattalCharacter->SetWeaponStanceState(Weapon->SelfStance);
 			BattalCharacter->SetCharacterState(ECharacterState::ECS_Equipped);
-			BattalCharacter->SetWeapon(Weapon);
 			BattalCharacter->Weapons.AddUnique(Weapon);
 			BattalCharacter->Weapon->Sphere->DestroyComponent();
 		}
@@ -323,7 +323,8 @@ void ABattalController::Guard()
 
 void ABattalController::ExitGuard()
 {
-	if(BattalCharacter->GetActionState() == EActionState::Eas_Guarding)
+	BattalCharacter->IsGuarding = false;
+	if(BattalCharacter->GetActionState() == EActionState::Eas_Guarding && BattalCharacter->IsGuarding == true)
 	{
 		BattalCharacter->SetActionState(EActionState::Eas_Idling);
 		BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 500.f;
@@ -331,6 +332,7 @@ void ABattalController::ExitGuard()
 	}
 }
 //////////////GUARd SECTION///////////////////
+
 
 ///////////LIGHT ATTACK SECTION//////////////
 void ABattalController::LightAttack()
@@ -355,93 +357,98 @@ void ABattalController::LightAttack()
 			GetWorldTimerManager().SetTimer(EndAttackTimerHandle, this, &ABattalController::EndLightAttack, BattalCharacter->LightComboWaitTimes[0]);
 			BattalCharacter->SetActionState(EActionState::Eas_Attacking);
 			AnimInstance->Montage_Play(BattalCharacter->LightAttackMontage);
-		}
 		
+		}
 	}
 }
-
 void ABattalController::EndLightAttack()
 {
-	if(WasAttackSaved && BattalCharacter->GetCharacterState() != ECharacterState::ECS_Equipped)
-	{
-		if(LightAttackCounter > BattalCharacter->LightAttackComboCounter) {LightAttackCounter = 1;}
-		LightAttackCounter++;
-		float ComboWaitTime = 0.f;
-		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+		if(WasAttackSaved && BattalCharacter->GetCharacterState() != ECharacterState::ECS_Equipped)
 		{
-			AnimInstance->Montage_Play(BattalCharacter->LightAttackMontage);
-			FName SectionName = FName();
-			switch (LightAttackCounter)
+			if(LightAttackCounter > BattalCharacter->LightAttackComboCounter) {LightAttackCounter = 1;}
+			LightAttackCounter++;
+			float ComboWaitTime = 0.f;
+			if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
 			{
-			case 1 :
-				SectionName = FName("Attack1");
-				ComboWaitTime = BattalCharacter->LightComboWaitTimes[0];
-				break;
-			case 2:
-				SectionName = FName("Attack2");
-				ComboWaitTime = BattalCharacter->LightComboWaitTimes[1];
-				break;
-			case 3:
-				SectionName = FName("Attack3");
-				ComboWaitTime = BattalCharacter->LightComboWaitTimes[2];
-				break;
-			case 4:
-				SectionName = FName("Attack4");
-				ComboWaitTime = BattalCharacter->LightComboWaitTimes[3];
-				break;
-			default:
-				SectionName = FName("Attack1");
-				ComboWaitTime = BattalCharacter->LightComboWaitTimes[0];
-				break;
+				AnimInstance->Montage_Play(BattalCharacter->LightAttackMontage);
+				FName SectionName = FName();
+				switch (LightAttackCounter)
+				{
+				case 1 :
+					SectionName = FName("Attack1");
+					ComboWaitTime = BattalCharacter->LightComboWaitTimes[0];
+					break;
+				case 2:
+					SectionName = FName("Attack2");
+					ComboWaitTime = BattalCharacter->LightComboWaitTimes[1];
+					break;
+				case 3:
+					SectionName = FName("Attack3");
+					ComboWaitTime = BattalCharacter->LightComboWaitTimes[2];
+					break;
+				case 4:
+					SectionName = FName("Attack4");
+					ComboWaitTime = BattalCharacter->LightComboWaitTimes[3];
+					break;
+				default:
+					SectionName = FName("Attack1");
+					ComboWaitTime = BattalCharacter->LightComboWaitTimes[0];
+					break;
+				}
+				AnimInstance->Montage_JumpToSection(SectionName, BattalCharacter->LightAttackMontage);
 			}
-			AnimInstance->Montage_JumpToSection(SectionName, BattalCharacter->LightAttackMontage);
+			WasAttackSaved = false;
+			GetWorldTimerManager().SetTimer(EndAttackTimerHandle, this, &ABattalController::EndLightAttack, ComboWaitTime);
 		}
-		WasAttackSaved = false;
-		GetWorldTimerManager().SetTimer(EndAttackTimerHandle, this, &ABattalController::EndLightAttack, ComboWaitTime);
-	}
-	else if(WasAttackSaved && BattalCharacter->GetCharacterState() == ECharacterState::ECS_Equipped)
-	{
-		if(LightAttackCounter > BattalCharacter->Weapon->LightAttackComboCounter) {LightAttackCounter = 1;}
-		LightAttackCounter++;
-		float ComboWaitTime = 0.f;
-		if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
+		else if(WasAttackSaved && BattalCharacter->GetCharacterState() == ECharacterState::ECS_Equipped)
 		{
-			AnimInstance->Montage_Play(BattalCharacter->Weapon->LightAttackMontage);
-			FName SectionName = FName();
-			switch (LightAttackCounter)
+			if(LightAttackCounter > BattalCharacter->Weapon->LightAttackComboCounter) {LightAttackCounter = 1;}
+			LightAttackCounter++;
+			float ComboWaitTime = 0.f;
+			if (UAnimInstance* AnimInstance = BattalCharacter->GetMesh()->GetAnimInstance())
 			{
-			case 1 :
-				SectionName = FName("Attack1");
-				ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[0];
-				break;
-			case 2:
-				SectionName = FName("Attack2");
-				ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[1];
-				break;
-			case 3:
-				SectionName = FName("Attack3");
-				ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[2];
-				break;
-			case 4:
-				SectionName = FName("Attack4");
-				ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[3];
-				break;
-			default:
-				SectionName = FName("Attack1");
-				ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[0];
-				break;
+				AnimInstance->Montage_Play(BattalCharacter->Weapon->LightAttackMontage);
+				FName SectionName = FName();
+				switch (LightAttackCounter)
+				{
+				case 1 :
+					SectionName = FName("Attack1");
+					ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[0];
+					break;
+				case 2:
+					SectionName = FName("Attack2");
+					ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[1];
+					break;
+				case 3:
+					SectionName = FName("Attack3");
+					ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[2];
+					break;
+				case 4:
+					SectionName = FName("Attack4");
+					ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[3];
+					break;
+				default:
+					SectionName = FName("Attack1");
+					ComboWaitTime = BattalCharacter->Weapon->LightComboWaitTimes[0];
+					break;
+				}
+				AnimInstance->Montage_JumpToSection(SectionName, BattalCharacter->Weapon->LightAttackMontage);
 			}
-			AnimInstance->Montage_JumpToSection(SectionName, BattalCharacter->Weapon->LightAttackMontage);
+			WasAttackSaved = false;
+			GetWorldTimerManager().SetTimer(EndAttackTimerHandle, this, &ABattalController::EndLightAttack, ComboWaitTime);
 		}
-		WasAttackSaved = false;
-		GetWorldTimerManager().SetTimer(EndAttackTimerHandle, this, &ABattalController::EndLightAttack, ComboWaitTime);
-	}
-	else
-	{
-		BattalCharacter->SetActionState(EActionState::Eas_Idling);
-		LightAttackCounter = 1;
-		WasAttackSaved = false;
-		GetWorldTimerManager().ClearTimer(EndAttackTimerHandle);
-	}
-	
+		else if(BattalCharacter->IsGuarding == true)
+		{
+			BattalCharacter->SetActionState(EActionState::Eas_Guarding);
+			LightAttackCounter = 1;
+			WasAttackSaved = false;
+			GetWorldTimerManager().ClearTimer(EndAttackTimerHandle);
+		}
+		else
+		{
+			BattalCharacter->SetActionState(EActionState::Eas_Idling);
+			LightAttackCounter = 1;
+			WasAttackSaved = false;
+			GetWorldTimerManager().ClearTimer(EndAttackTimerHandle);
+		}
 }
