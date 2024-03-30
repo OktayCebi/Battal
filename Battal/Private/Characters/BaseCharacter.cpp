@@ -26,7 +26,9 @@ ABaseCharacter::ABaseCharacter()
 	KickCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	
 	KickStartLocation = CreateDefaultSubobject<USceneComponent>("KickStartLocation");
+	KickStartLocation->SetupAttachment(KickCollisionBox);
 	KickEndLocation = CreateDefaultSubobject<USceneComponent>("KickEndLocation");
+	KickEndLocation->SetupAttachment(KickCollisionBox);
 	
 	Body = CreateDefaultSubobject<USkeletalMeshComponent>("Body");
 	Body->SetupAttachment(GetMesh());
@@ -35,6 +37,11 @@ ABaseCharacter::ABaseCharacter()
 	Arms = CreateDefaultSubobject<USkeletalMeshComponent>("Arms");
 	Arms->SetupAttachment(GetMesh());
 	Arms->SetLeaderPoseComponent(GetMesh());
+
+	Legs = CreateDefaultSubobject<USkeletalMeshComponent>("Legs");
+	Legs->SetupAttachment(GetMesh());
+	Legs->SetLeaderPoseComponent(GetMesh());
+	
 
 	LightAttackComboCounter = 0;
 

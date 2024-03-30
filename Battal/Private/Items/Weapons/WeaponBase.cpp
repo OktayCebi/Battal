@@ -93,3 +93,28 @@ void AWeaponBase::OnBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponen
 		true
 	);	
 }
+
+void AWeaponBase::OnSecondBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	const FVector Start = SecondBodyStartLocation->GetComponentLocation();
+	const FVector End = SecondBodyEndLocation->GetComponentLocation();
+	const FVector TraceSize = SecondBodyWeaponBox->GetUnscaledBoxExtent();
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this);
+	FHitResult SecondBodyWeaponBoxHit;
+	
+	UKismetSystemLibrary::BoxTraceSingle(
+		this,
+		Start,
+		End,
+		TraceSize,
+		BodyStartLocation->GetComponentRotation(),
+		TraceTypeQuery1,
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::Persistent,
+		SecondBodyWeaponBoxHit,
+		true
+	);
+}
