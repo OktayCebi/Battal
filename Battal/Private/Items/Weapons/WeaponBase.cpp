@@ -14,13 +14,13 @@ AWeaponBase::AWeaponBase()
 
 	BodyWeaponBox = CreateDefaultSubobject<UBoxComponent>("BodyWeaponBox");
 	BodyWeaponBox->SetupAttachment(Body);
-	BodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	BodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BodyWeaponBox->SetCollisionResponseToAllChannels(ECR_Overlap);
 	BodyWeaponBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 
 	SecondBodyWeaponBox = CreateDefaultSubobject<UBoxComponent>("SecondBodyWeaponBox");
 	SecondBodyWeaponBox->SetupAttachment(SecondBody);
-	SecondBodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SecondBodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SecondBodyWeaponBox->SetCollisionResponseToAllChannels(ECR_Overlap);
 	SecondBodyWeaponBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 

@@ -4,6 +4,7 @@
 #include "Characters/BaseCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/BoxComponent.h"
+#include "Items/Weapons/WeaponBase.h"
 
 
 ABaseCharacter::ABaseCharacter()
@@ -20,7 +21,7 @@ ABaseCharacter::ABaseCharacter()
 	IsGuarding = false;
 
 	KickCollisionBox = CreateDefaultSubobject<UBoxComponent>("KickCollisionBox");
-	KickCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	KickCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	KickCollisionBox->SetCollisionResponseToAllChannels(ECR_Overlap);
 	KickCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	
@@ -39,6 +40,48 @@ ABaseCharacter::ABaseCharacter()
 
 	LightComboWaitTimes.Insert(0.5f, 0);
 	
+}
+
+void ABaseCharacter::EnableBoxCollision()
+{
+	if(Weapon)
+	{
+		Weapon->BodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+}
+
+void ABaseCharacter::DisableBoxCollision()
+{
+	if(Weapon)
+	{
+		Weapon->BodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+void ABaseCharacter::EnableSecondBoxCollision()
+{
+	if(Weapon->SecondBodyWeaponBox)
+	{
+		Weapon->SecondBodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+}
+
+void ABaseCharacter::DisableSecondBoxCollision()
+{
+	if(Weapon->SecondBodyWeaponBox)
+	{
+		Weapon->SecondBodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+void ABaseCharacter::EnableKickBoxCollision()
+{
+	KickCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void ABaseCharacter::DisableKickBoxCollision()
+{
+	KickCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 

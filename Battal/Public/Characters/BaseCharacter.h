@@ -28,6 +28,24 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AWeaponBase> Weapon;
 
+	UFUNCTION(BlueprintCallable)
+	void EnableBoxCollision();
+
+	UFUNCTION(BlueprintCallable)
+	void DisableBoxCollision();
+
+	UFUNCTION(BlueprintCallable)
+	void EnableSecondBoxCollision();
+
+	UFUNCTION(BlueprintCallable)
+	void DisableSecondBoxCollision();
+
+	UFUNCTION(BlueprintCallable)
+	void EnableKickBoxCollision();
+
+	UFUNCTION(BlueprintCallable)
+	void DisableKickBoxCollision();
+
 	UPROPERTY(EditDefaultsOnly, Category="Montages")
 	TObjectPtr<UAnimMontage> DodgeMontage;
 

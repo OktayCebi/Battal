@@ -67,10 +67,10 @@ public:
 	UPROPERTY()
 	FName EquipMontageSectionName;
 
-	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon Properties")
 	TObjectPtr<UBoxComponent> BodyWeaponBox;
 
-	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon Properties")
 	TObjectPtr<UBoxComponent> SecondBodyWeaponBox;
 
 	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
