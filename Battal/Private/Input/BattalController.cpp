@@ -6,7 +6,6 @@
 #include "EnhancedInputComponent.h"
 #include "Characters/BattalCharacter.h"
 #include "Components/SphereComponent.h"
-#include "Elements/Framework/TypedElementQueryBuilder.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Items/Weapons/WeaponBase.h"
 
@@ -18,6 +17,7 @@ ABattalController::ABattalController()
 	WeaponIndex = 0;
 	WasAttackSaved = false;
 	LightAttackCounter = 1;
+	LastActionState = EActionState::Eas_Idling;
 }
 
 void ABattalController::BeginPlay()
@@ -324,11 +324,11 @@ void ABattalController::Guard()
 void ABattalController::ExitGuard()
 {
 	BattalCharacter->IsGuarding = false;
-	if(BattalCharacter->GetActionState() == EActionState::Eas_Guarding && BattalCharacter->IsGuarding == true)
+	BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	if(BattalCharacter->GetActionState() == EActionState::Eas_Guarding)
 	{
 		BattalCharacter->SetActionState(EActionState::Eas_Idling);
 		BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 500.f;
-		BattalCharacter->IsGuarding = false;
 	}
 }
 //////////////GUARd SECTION///////////////////
@@ -349,7 +349,7 @@ void ABattalController::LightAttack()
 			GetWorldTimerManager().SetTimer(EndAttackTimerHandle, this, &ABattalController::EndLightAttack, BattalCharacter->Weapon->LightComboWaitTimes[0]);
 			BattalCharacter->SetActionState(EActionState::Eas_Attacking);
 			AnimInstance->Montage_Play(BattalCharacter->Weapon->LightAttackMontage);
-			
+			BattalCharacter->IsGuarding = false;
 		}
 		
 		if(CanAttack() && BattalCharacter->GetCharacterState() != ECharacterState::ECS_Equipped)
@@ -357,7 +357,7 @@ void ABattalController::LightAttack()
 			GetWorldTimerManager().SetTimer(EndAttackTimerHandle, this, &ABattalController::EndLightAttack, BattalCharacter->LightComboWaitTimes[0]);
 			BattalCharacter->SetActionState(EActionState::Eas_Attacking);
 			AnimInstance->Montage_Play(BattalCharacter->LightAttackMontage);
-		
+			BattalCharacter->IsGuarding = false;
 		}
 	}
 }
@@ -437,16 +437,10 @@ void ABattalController::EndLightAttack()
 			WasAttackSaved = false;
 			GetWorldTimerManager().SetTimer(EndAttackTimerHandle, this, &ABattalController::EndLightAttack, ComboWaitTime);
 		}
-		else if(BattalCharacter->IsGuarding == true)
-		{
-			BattalCharacter->SetActionState(EActionState::Eas_Guarding);
-			LightAttackCounter = 1;
-			WasAttackSaved = false;
-			GetWorldTimerManager().ClearTimer(EndAttackTimerHandle);
-		}
 		else
 		{
 			BattalCharacter->SetActionState(EActionState::Eas_Idling);
+			BattalCharacter->GetCharacterMovement()->MaxWalkSpeed = 500.f;
 			LightAttackCounter = 1;
 			WasAttackSaved = false;
 			GetWorldTimerManager().ClearTimer(EndAttackTimerHandle);

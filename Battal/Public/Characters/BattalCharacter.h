@@ -17,4 +17,5 @@ class BATTAL_API ABattalCharacter : public ABaseCharacter
 public:
 	ABattalCharacter();
 	
+	
 };

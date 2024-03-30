@@ -28,15 +28,6 @@ void UBattalAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		if(UKismetMathLibrary::NearlyEqual_FloatFloat(IsAccelerating, 0.f, 0.001f))
 		{
 			bIsAccelerating = false;
-			if(BattalCharacter->GetActionState() == EActionState::Eas_Guarding)
-			{
-				BattalMovement->MaxWalkSpeed = 200.f;
-			}
-			else
-			{
-				BattalMovement->MaxWalkSpeed = 500.f;	
-			}
-			
 		}
 		else
 		{

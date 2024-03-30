@@ -19,8 +19,8 @@ AAxe_Shield::AAxe_Shield()
 	LightAttackComboCounter = 4;
 
 	LightComboWaitTimes.SetNum(4);
-	LightComboWaitTimes.Insert(0.66f, 0);
-	LightComboWaitTimes.Insert(0.53f, 1);
+	LightComboWaitTimes.Insert(0.70f, 0);
+	LightComboWaitTimes.Insert(0.66f, 1);
 	LightComboWaitTimes.Insert(0.77f, 2);
 	LightComboWaitTimes.Insert(1.69f, 3);
 }

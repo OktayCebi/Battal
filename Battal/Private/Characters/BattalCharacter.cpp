@@ -2,6 +2,8 @@
 
 
 #include "Characters/BattalCharacter.h"
+#include "Components/BoxComponent.h"
+
 
 ABattalCharacter::ABattalCharacter()
 {
@@ -11,4 +13,9 @@ ABattalCharacter::ABattalCharacter()
 	LightComboWaitTimes.Insert(0.63f, 0);
 	LightComboWaitTimes.Insert(0.89, 1);
 	LightComboWaitTimes.Insert(0.91f, 2);
+	
+	KickCollisionBox->SetupAttachment(GetMesh(), FName ("KickCollisionBoxSocket"));
+	KickStartLocation->SetupAttachment(KickCollisionBox);
+	KickEndLocation->SetupAttachment(KickCollisionBox);
 }
+
