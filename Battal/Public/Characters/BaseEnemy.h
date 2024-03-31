@@ -13,5 +13,14 @@ UCLASS()
 class BATTAL_API ABaseEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
+
+public:
+
+	ABaseEnemy();
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, Category="Enemy")
+	TSubclassOf<AWeaponBase> MainWeapon;
 	
 };

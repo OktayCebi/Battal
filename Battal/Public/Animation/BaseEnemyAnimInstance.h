@@ -4,16 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "BattalAnimInstance.generated.h"
-
+#include "BaseEnemyAnimInstance.generated.h"
 
 class UCharacterMovementComponent;
-class ABattalCharacter;
+class ABaseEnemy;
 /**
  * 
  */
 UCLASS()
-class BATTAL_API UBattalAnimInstance : public UAnimInstance
+class BATTAL_API UBaseEnemyAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 
@@ -24,10 +23,10 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<ABattalCharacter> BattalCharacter;
+	TObjectPtr<ABaseEnemy> EnemyCharacter;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	TObjectPtr<UCharacterMovementComponent> BattalMovement;
+	TObjectPtr<UCharacterMovementComponent> EnemyMovement;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float GroundSpeed;

@@ -1,10 +1,8 @@
 // Battal
 
 #include "Animation/BattalAnimInstance.h"
-
-#include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Items/Weapons/WeaponBase.h"
+#include "Characters/BattalCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UBattalAnimInstance::NativeInitializeAnimation()
