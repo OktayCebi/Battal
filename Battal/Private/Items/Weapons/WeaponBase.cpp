@@ -4,6 +4,7 @@
 #include "Items/Weapons/WeaponBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/BoxComponent.h"
+#include "Interfaces/HitInterface.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -42,6 +43,7 @@ AWeaponBase::AWeaponBase()
 	LightComboWaitTimes.Insert(0.50f, 0);
 
 	WeaponBaseDamage = 35.f;
+	
 }
 
 void AWeaponBase::BeginPlay()
@@ -78,6 +80,10 @@ void AWeaponBase::OnBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponen
 	const FVector End = BodyEndLocation->GetComponentLocation();
 	const FVector TraceSize = BodyWeaponBox->GetUnscaledBoxExtent();
 	TArray<AActor*> ActorsToIgnore;
+	for (AActor* Actor : IgnoreActors)
+	{
+		ActorsToIgnore.AddUnique(Actor);
+	}
 	ActorsToIgnore.Add(this);
 	FHitResult BodyWeaponBoxHit;
 	
@@ -93,7 +99,17 @@ void AWeaponBase::OnBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponen
 		EDrawDebugTrace::ForDuration,
 		BodyWeaponBoxHit,
 		true
-	);	
+	);
+
+	if (BodyWeaponBoxHit.GetActor())
+	{
+		if(IHitInterface* HitInterface = Cast<IHitInterface>(BodyWeaponBoxHit.GetActor()))
+		{
+			HitInterface->GetHit(WeaponBaseDamage, BodyWeaponBoxHit.ImpactPoint);
+		}
+		
+		IgnoreActors.AddUnique(BodyWeaponBoxHit.GetActor());
+	}
 }
 
 void AWeaponBase::OnSecondBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -103,6 +119,10 @@ void AWeaponBase::OnSecondBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedCo
 	const FVector End = SecondBodyEndLocation->GetComponentLocation();
 	const FVector TraceSize = SecondBodyWeaponBox->GetUnscaledBoxExtent();
 	TArray<AActor*> ActorsToIgnore;
+	for (AActor* Actor : IgnoreActors)
+	{
+		ActorsToIgnore.AddUnique(Actor);
+	}
 	ActorsToIgnore.Add(this);
 	FHitResult SecondBodyWeaponBoxHit;
 	
@@ -119,4 +139,14 @@ void AWeaponBase::OnSecondBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedCo
 		SecondBodyWeaponBoxHit,
 		true
 	);
+
+	if (SecondBodyWeaponBoxHit.GetActor())
+	{
+		if(IHitInterface* HitInterface = Cast<IHitInterface>(SecondBodyWeaponBoxHit.GetActor()))
+		{
+			HitInterface->GetHit(WeaponBaseDamage, SecondBodyWeaponBoxHit.ImpactPoint);
+		}
+
+		IgnoreActors.AddUnique(SecondBodyWeaponBoxHit.GetActor());
+	}
 }

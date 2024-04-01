@@ -99,6 +99,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category="Weapon Attributes")
 	float WeaponBaseDamage;
+
+	UPROPERTY()
+	TArray<AActor*> IgnoreActors;
 	
 protected:
 
@@ -113,5 +116,6 @@ protected:
 
 	UFUNCTION()
 	virtual void OnSecondBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	
 	
 };

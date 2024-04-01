@@ -87,6 +87,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category="CharacterBaseAttributes")
 	float KickBaseDamage;
+
+	UPROPERTY()
+	TArray<AActor*> IgnoreActors;
 	
 protected:
 

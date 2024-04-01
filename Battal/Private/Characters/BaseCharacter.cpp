@@ -68,6 +68,7 @@ void ABaseCharacter::DisableBoxCollision()
 	if(Weapon)
 	{
 		Weapon->BodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Weapon->IgnoreActors.Empty();
 	}
 }
 
@@ -84,6 +85,7 @@ void ABaseCharacter::DisableSecondBoxCollision()
 	if(Weapon->SecondBodyWeaponBox)
 	{
 		Weapon->SecondBodyWeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Weapon->IgnoreActors.Empty();
 	}
 }
 
@@ -95,6 +97,7 @@ void ABaseCharacter::EnableKickBoxCollision()
 void ABaseCharacter::DisableKickBoxCollision()
 {
 	KickCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	IgnoreActors.Empty();
 }
 
 
@@ -122,6 +125,10 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 	const FVector End = KickEndLocation->GetComponentLocation();
 	const FVector TraceSize = KickCollisionBox->GetUnscaledBoxExtent();
 	TArray<AActor*> ActorsToIgnore;
+	for (AActor* Actor : IgnoreActors)
+	{
+		ActorsToIgnore.AddUnique(Actor);
+	}
 	ActorsToIgnore.Add(this);
 	FHitResult KickBoxHit;
 	
@@ -145,6 +152,7 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 		{
 			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint);
 		}
+		IgnoreActors.AddUnique(KickBoxHit.GetActor());
 	}
 }
 
