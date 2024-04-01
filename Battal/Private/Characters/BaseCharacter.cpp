@@ -3,6 +3,7 @@
 
 #include "Characters/BaseCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Interfaces/HitInterface.h"
 #include "Components/BoxComponent.h"
 #include "Items/Weapons/WeaponBase.h"
 
@@ -46,7 +47,12 @@ ABaseCharacter::ABaseCharacter()
 	LightAttackComboCounter = 0;
 
 	LightComboWaitTimes.Insert(0.5f, 0);
-	
+
+	MaxHealth = 100.f;
+	Health = MaxHealth;
+	MaxPosture = 100.f;
+	Posture = MaxPosture;
+	KickBaseDamage = 25.f;
 }
 
 void ABaseCharacter::EnableBoxCollision()
@@ -92,9 +98,14 @@ void ABaseCharacter::DisableKickBoxCollision()
 }
 
 
-void ABaseCharacter::GetHit()
+void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint)
 {
-	
+	if (GetActionState() == EActionState::Eas_Guarding)
+	Posture = Posture - (Damage / 2.f);
+	else
+	{
+		Health = Health - Damage;
+	}
 }
 
 void ABaseCharacter::BeginPlay()
@@ -112,7 +123,7 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 	const FVector TraceSize = KickCollisionBox->GetUnscaledBoxExtent();
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(this);
-	FHitResult BodyWeaponBoxHit;
+	FHitResult KickBoxHit;
 	
 	UKismetSystemLibrary::BoxTraceSingle(
 		this,
@@ -124,8 +135,16 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 		false,
 		ActorsToIgnore,
 		EDrawDebugTrace::ForDuration,
-		BodyWeaponBoxHit,
+		KickBoxHit,
 		true
-	);	
+	);
+
+	if (KickBoxHit.GetActor())
+	{
+		if(IHitInterface* HitInterface = Cast<IHitInterface>(KickBoxHit.GetActor()))
+		{
+			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint);
+		}
+	}
 }
 

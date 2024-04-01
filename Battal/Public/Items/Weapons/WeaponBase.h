@@ -40,6 +40,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Montages")
 	TObjectPtr<UAnimMontage> LightAttackMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> LightHitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> HeavyHitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> GuardHitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category="Montages")
+	TObjectPtr<UAnimMontage> GuardHeavyHitReactMontage;
+
 	UPROPERTY()
 	int32 LightAttackComboCounter;
 
@@ -84,7 +96,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	TObjectPtr<USceneComponent> SecondBodyEndLocation;
-	
+
+	UPROPERTY(VisibleAnywhere, Category="Weapon Attributes")
+	float WeaponBaseDamage;
 	
 protected:
 

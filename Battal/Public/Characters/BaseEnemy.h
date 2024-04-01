@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Characters/BaseCharacter.h"
-
 #include "BaseEnemy.generated.h"
 
 class ABattalCharacter;
@@ -28,6 +27,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<ABattalCharacter> Target;
+
+	virtual void GetHit(const float& Damage, const FVector& ImpactPoint) override;
 
 protected:
 	UPROPERTY(VisibleAnywhere)

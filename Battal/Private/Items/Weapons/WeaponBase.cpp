@@ -40,6 +40,8 @@ AWeaponBase::AWeaponBase()
 	LightAttackComboCounter = 0;
 
 	LightComboWaitTimes.Insert(0.50f, 0);
+
+	WeaponBaseDamage = 35.f;
 }
 
 void AWeaponBase::BeginPlay()

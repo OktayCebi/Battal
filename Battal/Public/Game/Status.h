@@ -5,7 +5,8 @@ enum class ECharacterState : uint8
 {
 	ECS_Unarmed UMETA(DisplayName = "Unarmed"),
 	ECS_Armed UMETA (DisplayName = "Armed"),
-	ECS_Equipped UMETA (DisplayName = "Equipped")
+	ECS_Equipped UMETA (DisplayName = "Equipped"),
+	ECS_Dead UMETA (DisplayName = "Dead")
 };
 
 
@@ -16,7 +17,8 @@ enum class EActionState : uint8
 	Eas_Moving UMETA (DisplayName = "Moving"),
 	Eas_Dodging UMETA (DisplayName = "Dodging"),
 	Eas_Guarding UMETA (DisplayName = "Guarding"),
-	Eas_Attacking UMETA (DisplayName = "Attacking")
+	Eas_Attacking UMETA (DisplayName = "Attacking"),
+	Eas_Staggered UMETA (DisplayName = "Staggered")
 };
 
 UENUM(BlueprintType)

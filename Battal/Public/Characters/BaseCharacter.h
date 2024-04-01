@@ -71,8 +71,22 @@ public:
 	UPROPERTY()
 	TArray<float> LightComboWaitTimes;
 
-	virtual void GetHit() override;
+	virtual void GetHit(const float& Damage, const FVector& ImpactPoint) override;
 
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="CharacterBaseAttributes")
+	float MaxHealth;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="CharacterBaseAttributes")
+	float Health;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="CharacterBaseAttributes")
+	float MaxPosture;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="CharacterBaseAttributes")
+	float Posture;
+	
+	UPROPERTY(VisibleAnywhere, Category="CharacterBaseAttributes")
+	float KickBaseDamage;
 	
 protected:
 
