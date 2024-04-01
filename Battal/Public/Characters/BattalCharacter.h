@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/BaseCharacter.h"
+
 #include "BattalCharacter.generated.h"
 
 /**
@@ -16,6 +17,4 @@ class BATTAL_API ABattalCharacter : public ABaseCharacter
 
 public:
 	ABattalCharacter();
-	
-	
 };

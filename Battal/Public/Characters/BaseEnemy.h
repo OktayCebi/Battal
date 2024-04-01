@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Characters/BaseCharacter.h"
+
 #include "BaseEnemy.generated.h"
 
+class ABattalCharacter;
+class UPawnSensingComponent;
 /**
  * 
  */
@@ -22,5 +25,14 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Enemy")
 	TSubclassOf<AWeaponBase> MainWeapon;
-	
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<ABattalCharacter> Target;
+
+protected:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPawnSensingComponent> PawnSensing;
+
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
 };

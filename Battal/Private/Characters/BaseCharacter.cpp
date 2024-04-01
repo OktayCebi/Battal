@@ -92,6 +92,11 @@ void ABaseCharacter::DisableKickBoxCollision()
 }
 
 
+void ABaseCharacter::GetHit()
+{
+	
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Game/Status.h"
+#include "Interfaces/HitInterface.h"
 #include "BaseCharacter.generated.h"
 
 class UBoxComponent;
 class AWeaponBase;
 class AItemBase;
 UCLASS()
-class BATTAL_API ABaseCharacter : public ACharacter
+class BATTAL_API ABaseCharacter : public ACharacter, public IHitInterface
 {
 	GENERATED_BODY()
 
@@ -69,6 +70,8 @@ public:
 
 	UPROPERTY()
 	TArray<float> LightComboWaitTimes;
+
+	virtual void GetHit() override;
 
 	
 protected:

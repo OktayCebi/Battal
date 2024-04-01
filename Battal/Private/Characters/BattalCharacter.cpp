@@ -15,5 +15,6 @@ ABattalCharacter::ABattalCharacter()
 	LightComboWaitTimes.Insert(0.91f, 2);
 	
 	KickCollisionBox->SetupAttachment(GetMesh(), FName ("KickCollisionBoxSocket"));
+	
 }
 
