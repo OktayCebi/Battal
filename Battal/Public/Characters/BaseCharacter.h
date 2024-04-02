@@ -71,7 +71,7 @@ public:
 	UPROPERTY()
 	TArray<float> LightComboWaitTimes;
 
-	virtual void GetHit(const float& Damage, const FVector& ImpactPoint) override;
+	virtual void GetHit(const float& Damage, const FVector& ImpactPoint, const FVector& ITargetLocation) override;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="CharacterBaseAttributes")
 	float MaxHealth;
@@ -87,6 +87,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category="CharacterBaseAttributes")
 	float KickBaseDamage;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<ABaseCharacter> Target;
 
 	UPROPERTY()
 	TArray<AActor*> IgnoreActors;
@@ -118,7 +121,10 @@ protected:
 
 	UFUNCTION()
 	virtual void OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	
+
+	UFUNCTION()
+	static FName  GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation);
+
 public:
 	FORCEINLINE ECharacterState GetCharacterState() const {return CharacterState;}
 	FORCEINLINE ECharacterState SetCharacterState(ECharacterState const NewState) {return CharacterState = NewState;}

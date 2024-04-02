@@ -25,11 +25,6 @@ public:
 	UPROPERTY(EditAnywhere, Category="Enemy")
 	TSubclassOf<AWeaponBase> MainWeapon;
 
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<ABattalCharacter> Target;
-
-	virtual void GetHit(const float& Damage, const FVector& ImpactPoint) override;
-
 protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPawnSensingComponent> PawnSensing;

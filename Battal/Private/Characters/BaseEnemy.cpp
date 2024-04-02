@@ -2,7 +2,6 @@
 
 
 #include "Characters/BaseEnemy.h"
-#include "Animation/BaseEnemyAnimInstance.h"
 #include "Characters/BattalCharacter.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/BoxComponent.h"
@@ -50,19 +49,7 @@ void ABaseEnemy::BeginPlay()
 	}
 }
 
-void ABaseEnemy::GetHit(const float& Damage, const FVector& ImpactPoint)
-{
-	Super::GetHit(Damage, ImpactPoint);
-
-	if( Damage < 70.f)
-	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if(AnimInstance->Montage_IsPlaying(Weapon->LightHitReactMontage) == false)
-		AnimInstance->Montage_Play(Weapon->LightHitReactMontage);
-	}
-}
-
 void ABaseEnemy::PawnSeen(APawn* SeenPawn)
 {
-	Target = Cast<ABattalCharacter>(SeenPawn);
+	Target = Cast<ABaseCharacter>(SeenPawn);
 }

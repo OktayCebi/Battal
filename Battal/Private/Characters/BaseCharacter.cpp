@@ -6,6 +6,7 @@
 #include "Interfaces/HitInterface.h"
 #include "Components/BoxComponent.h"
 #include "Items/Weapons/WeaponBase.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 ABaseCharacter::ABaseCharacter()
@@ -53,6 +54,9 @@ ABaseCharacter::ABaseCharacter()
 	MaxPosture = 100.f;
 	Posture = MaxPosture;
 	KickBaseDamage = 25.f;
+
+	Target = nullptr;
+	
 }
 
 void ABaseCharacter::EnableBoxCollision()
@@ -100,22 +104,42 @@ void ABaseCharacter::DisableKickBoxCollision()
 	IgnoreActors.Empty();
 }
 
-
-void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint)
-{
-	if (GetActionState() == EActionState::Eas_Guarding)
-	Posture = Posture - (Damage / 2.f);
-	else
-	{
-		Health = Health - Damage;
-	}
-}
-
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	KickCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnKickBoxOverlap);
+}
+
+FName ABaseCharacter::GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation)
+{
+	FRotator const LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SelfLocation, TargetLocation);
+	FRotator const FinalAngle = UKismetMathLibrary::NormalizedDeltaRotator(SelfRotation, LookAtRotation);
+	FName Section("Back");
+	if(FinalAngle.Yaw >= -45.f && FinalAngle.Yaw < 45.f)
+	{
+		Section = FName("Front");
+	}
+	else if (FinalAngle.Yaw >= -135.f && FinalAngle.Yaw < -45.f)
+	{
+		Section = FName("Right");
+	}
+	else if(FinalAngle.Yaw >= 45.f && FinalAngle.Yaw < 135.f)
+	{
+		return FName("Left");
+	}
+	return FName(Section);
+}
+
+void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint, const FVector& ITargetLocation)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance->Montage_IsPlaying(Weapon->LightHitReactMontage) == false)
+	{
+	AnimInstance->Montage_Play(Weapon->LightHitReactMontage);
+	AnimInstance->Montage_JumpToSection( GetAngle(GetActorLocation(), GetActorRotation(), ITargetLocation), Weapon->LightAttackMontage);
+	}
+
 }
 
 void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -150,9 +174,8 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		if(IHitInterface* HitInterface = Cast<IHitInterface>(KickBoxHit.GetActor()))
 		{
-			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint);
+			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint, KickBoxHit.GetActor()->GetActorLocation());
 		}
 		IgnoreActors.AddUnique(KickBoxHit.GetActor());
 	}
 }
-

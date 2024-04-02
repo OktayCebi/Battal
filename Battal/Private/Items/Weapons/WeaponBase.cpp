@@ -50,7 +50,7 @@ void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BodyWeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnBodyWeaponBoxOverlap);
+	//BodyWeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnBodyWeaponBoxOverlap);
 }
 
 void AWeaponBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -72,7 +72,7 @@ void AWeaponBase::PickedUp(USceneComponent* InParent, const FName InSocketName, 
 	Body->AttachToComponent(InParent, TransformRules, InSocketName);
 	SecondBody->AttachToComponent(InParent, TransformRules, InSocketNameSecond);
 }
-
+/**
 void AWeaponBase::OnBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -148,5 +148,6 @@ void AWeaponBase::OnSecondBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedCo
 		}
 
 		IgnoreActors.AddUnique(SecondBodyWeaponBoxHit.GetActor());
-	}
+	} 
 }
+*/
