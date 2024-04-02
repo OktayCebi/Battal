@@ -111,37 +111,6 @@ void ABaseCharacter::BeginPlay()
 	KickCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABaseCharacter::OnKickBoxOverlap);
 }
 
-FName ABaseCharacter::GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation)
-{
-	FRotator const LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SelfLocation, TargetLocation);
-	FRotator const FinalAngle = UKismetMathLibrary::NormalizedDeltaRotator(SelfRotation, LookAtRotation);
-	FName Section("Back");
-	if(FinalAngle.Yaw >= -45.f && FinalAngle.Yaw < 45.f)
-	{
-		Section = FName("Front");
-	}
-	else if (FinalAngle.Yaw >= -135.f && FinalAngle.Yaw < -45.f)
-	{
-		Section = FName("Right");
-	}
-	else if(FinalAngle.Yaw >= 45.f && FinalAngle.Yaw < 135.f)
-	{
-		return FName("Left");
-	}
-	return FName(Section);
-}
-
-void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint, const FVector& ITargetLocation)
-{
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if(AnimInstance->Montage_IsPlaying(Weapon->LightHitReactMontage) == false)
-	{
-	AnimInstance->Montage_Play(Weapon->LightHitReactMontage);
-	AnimInstance->Montage_JumpToSection( GetAngle(GetActorLocation(), GetActorRotation(), ITargetLocation), Weapon->LightAttackMontage);
-	}
-
-}
-
 void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -174,8 +143,39 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		if(IHitInterface* HitInterface = Cast<IHitInterface>(KickBoxHit.GetActor()))
 		{
-			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint, KickBoxHit.GetActor()->GetActorLocation());
+			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint);
 		}
 		IgnoreActors.AddUnique(KickBoxHit.GetActor());
 	}
+}
+
+FName ABaseCharacter::GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation)
+{
+	FRotator const LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SelfLocation, TargetLocation);
+	FRotator const FinalAngle = UKismetMathLibrary::NormalizedDeltaRotator(SelfRotation, LookAtRotation);
+	FName Section("Back");
+	if(FinalAngle.Yaw >= -45.f && FinalAngle.Yaw < 45.f)
+	{
+		Section = FName("Front");
+	}
+	else if (FinalAngle.Yaw >= -135.f && FinalAngle.Yaw < -45.f)
+	{
+		Section = FName("Right");
+	}
+	else if(FinalAngle.Yaw >= 45.f && FinalAngle.Yaw < 135.f)
+	{
+		Section = FName("Left");
+	}
+	return FName(Section);
+}
+
+void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance->Montage_IsPlaying(Weapon->LightHitReactMontage) == false)
+	{
+		AnimInstance->Montage_Play(Weapon->LightHitReactMontage);
+		AnimInstance->Montage_JumpToSection(GetAngle(GetActorLocation(), GetActorRotation(), Target->GetActorLocation()), Weapon->LightHitReactMontage);
+	}
+
 }
