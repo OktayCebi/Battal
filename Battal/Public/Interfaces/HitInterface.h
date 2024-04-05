@@ -21,6 +21,6 @@ class BATTAL_API IHitInterface
 	GENERATED_BODY()
 
 public:
-	virtual void GetHit(const float& Damage, const FVector& ImpactPoint)  = 0;
+	virtual void GetHit(const float& Damage, const FVector& ImpactPoint, const FVector& TargetLocation, const FRotator& TargetRotation, const FVector& SelfLocation)  = 0;
 	
 };

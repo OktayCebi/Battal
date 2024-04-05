@@ -21,6 +21,9 @@ public:
 	ABaseCharacter();
 
 	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AActor> BaseChar;
+
+	UPROPERTY(BlueprintReadOnly)
 	bool IsGuarding;
 
 	UPROPERTY()
@@ -71,9 +74,9 @@ public:
 	UPROPERTY()
 	TArray<float> LightComboWaitTimes;
 
-	virtual void GetHit(const float& Damage, const FVector& ImpactPoint) override;
+	virtual void GetHit(const float& Damage, const FVector& ImpactPoint,const FVector& TargetLocation, const FRotator& TargetRotation, const FVector& SelfLocation) override;
 
-	static FName GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation);
+	//static FName GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation);
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="CharacterBaseAttributes")
 	float MaxHealth;

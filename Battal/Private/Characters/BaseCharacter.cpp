@@ -11,7 +11,7 @@
 
 ABaseCharacter::ABaseCharacter()
 {
- 	
+ 	BaseChar = nullptr;
 	PrimaryActorTick.bCanEverTick = false;
 	
 	SetCharacterState(ECharacterState::ECS_Unarmed);
@@ -124,7 +124,6 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 	}
 	ActorsToIgnore.Add(this);
 	FHitResult KickBoxHit;
-	
 	UKismetSystemLibrary::BoxTraceSingle(
 		this,
 		Start,
@@ -138,17 +137,19 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 		KickBoxHit,
 		true
 	);
+	
 
 	if (KickBoxHit.GetActor())
 	{
 		if(IHitInterface* HitInterface = Cast<IHitInterface>(KickBoxHit.GetActor()))
 		{
-			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint);
+			BaseChar = KickBoxHit.GetActor();
+			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint,KickBoxHit.GetActor()->GetActorLocation(), KickBoxHit.GetActor()->GetActorRotation(), GetActorLocation());
 		}
 		IgnoreActors.AddUnique(KickBoxHit.GetActor());
 	}
 }
-
+/**
 FName ABaseCharacter::GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation)
 {
 	FRotator const LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SelfLocation, TargetLocation);
@@ -168,14 +169,54 @@ FName ABaseCharacter::GetAngle(const FVector& SelfLocation, const FRotator& Self
 	}
 	return FName(Section);
 }
-
-void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint)
+*/
+void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint,const FVector& TargetLocation, const FRotator& TargetRotation, const FVector& SelfLocation)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if(AnimInstance->Montage_IsPlaying(Weapon->LightHitReactMontage) == false)
 	{
+		Health = Health - Damage;
+		FRotator const LookAtRotation = UKismetMathLibrary::FindLookAtRotation(TargetLocation, SelfLocation);
+		FRotator const FinalAngle = UKismetMathLibrary::NormalizedDeltaRotator(TargetRotation, LookAtRotation);
+		const float Angle = FinalAngle.Yaw;
+		int32 ChooseSection = 0;
+		FName Section = FName();
+		
+		if(Angle >= -45.f && FinalAngle.Yaw < 45.f)
+		{
+			ChooseSection = 1;
+		}
+		else if (Angle >= -135.f && FinalAngle.Yaw < -45.f)
+		{
+			ChooseSection = 2;
+		}
+		else if(Angle >= 45.f && FinalAngle.Yaw < 135.f)
+		{
+			ChooseSection = 3;
+		}
+		else
+		{
+			ChooseSection = 0;
+		}
+		
+		switch (ChooseSection)
+		{
+		case 1 :
+			Section = ("Front");
+			break;
+		case 2 :
+			Section = ("Right");
+			break;
+		case  3 :
+			Section = ("Left");
+			break;
+		default:
+			Section = ("Back");
+			break;
+		}
+		
 		AnimInstance->Montage_Play(Weapon->LightHitReactMontage);
-		AnimInstance->Montage_JumpToSection(GetAngle(GetActorLocation(), GetActorRotation(), Target->GetActorLocation()), Weapon->LightHitReactMontage);
+		AnimInstance->Montage_JumpToSection(Section, Weapon->LightHitReactMontage);
 	}
 
 }
