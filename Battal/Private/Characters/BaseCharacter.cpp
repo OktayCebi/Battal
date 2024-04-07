@@ -11,7 +11,6 @@
 
 ABaseCharacter::ABaseCharacter()
 {
- 	BaseChar = nullptr;
 	PrimaryActorTick.bCanEverTick = false;
 	
 	SetCharacterState(ECharacterState::ECS_Unarmed);
@@ -143,7 +142,6 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		if(IHitInterface* HitInterface = Cast<IHitInterface>(KickBoxHit.GetActor()))
 		{
-			BaseChar = KickBoxHit.GetActor();
 			HitInterface->GetHit(KickBaseDamage, KickBoxHit.ImpactPoint,KickBoxHit.GetActor()->GetActorLocation(), KickBoxHit.GetActor()->GetActorRotation(), GetActorLocation());
 		}
 		IgnoreActors.AddUnique(KickBoxHit.GetActor());
@@ -179,40 +177,23 @@ void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint,cons
 		FRotator const LookAtRotation = UKismetMathLibrary::FindLookAtRotation(TargetLocation, SelfLocation);
 		FRotator const FinalAngle = UKismetMathLibrary::NormalizedDeltaRotator(TargetRotation, LookAtRotation);
 		const float Angle = FinalAngle.Yaw;
-		int32 ChooseSection = 0;
 		FName Section = FName();
 		
 		if(Angle >= -45.f && FinalAngle.Yaw < 45.f)
 		{
-			ChooseSection = 1;
+			Section = ("Front");
 		}
 		else if (Angle >= -135.f && FinalAngle.Yaw < -45.f)
 		{
-			ChooseSection = 2;
+			Section = ("Right");
 		}
 		else if(Angle >= 45.f && FinalAngle.Yaw < 135.f)
 		{
-			ChooseSection = 3;
+			Section = ("Left");
 		}
 		else
 		{
-			ChooseSection = 0;
-		}
-		
-		switch (ChooseSection)
-		{
-		case 1 :
-			Section = ("Front");
-			break;
-		case 2 :
-			Section = ("Right");
-			break;
-		case  3 :
-			Section = ("Left");
-			break;
-		default:
 			Section = ("Back");
-			break;
 		}
 		
 		AnimInstance->Montage_Play(Weapon->LightHitReactMontage);

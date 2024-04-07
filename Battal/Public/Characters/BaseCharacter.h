@@ -21,9 +21,6 @@ public:
 	ABaseCharacter();
 
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<AActor> BaseChar;
-
-	UPROPERTY(BlueprintReadOnly)
 	bool IsGuarding;
 
 	UPROPERTY()
@@ -76,8 +73,6 @@ public:
 
 	virtual void GetHit(const float& Damage, const FVector& ImpactPoint,const FVector& TargetLocation, const FRotator& TargetRotation, const FVector& SelfLocation) override;
 
-	//static FName GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation);
-
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="CharacterBaseAttributes")
 	float MaxHealth;
 
@@ -126,10 +121,7 @@ protected:
 
 	UFUNCTION()
 	virtual void OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-/**
-	UFUNCTION()
-	static FName  GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation);
-*/
+
 public:
 	FORCEINLINE ECharacterState GetCharacterState() const {return CharacterState;}
 	FORCEINLINE ECharacterState SetCharacterState(ECharacterState const NewState) {return CharacterState = NewState;}
