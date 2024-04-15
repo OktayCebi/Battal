@@ -50,7 +50,7 @@ void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//BodyWeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnBodyWeaponBoxOverlap);
+	BodyWeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnBodyWeaponBoxOverlap);
 }
 
 void AWeaponBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -72,7 +72,7 @@ void AWeaponBase::PickedUp(USceneComponent* InParent, const FName InSocketName, 
 	Body->AttachToComponent(InParent, TransformRules, InSocketName);
 	SecondBody->AttachToComponent(InParent, TransformRules, InSocketNameSecond);
 }
-/**
+
 void AWeaponBase::OnBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -105,7 +105,7 @@ void AWeaponBase::OnBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponen
 	{
 		if(IHitInterface* HitInterface = Cast<IHitInterface>(BodyWeaponBoxHit.GetActor()))
 		{
-			HitInterface->GetHit(WeaponBaseDamage, BodyWeaponBoxHit.ImpactPoint);
+			HitInterface->GetHit(WeaponBaseDamage, BodyWeaponBoxHit.ImpactPoint, BodyWeaponBoxHit.GetActor()->GetActorLocation(), BodyWeaponBoxHit.GetActor()->GetActorRotation(), GetActorLocation());
 		}
 		
 		IgnoreActors.AddUnique(BodyWeaponBoxHit.GetActor());
@@ -144,10 +144,10 @@ void AWeaponBase::OnSecondBodyWeaponBoxOverlap(UPrimitiveComponent* OverlappedCo
 	{
 		if(IHitInterface* HitInterface = Cast<IHitInterface>(SecondBodyWeaponBoxHit.GetActor()))
 		{
-			HitInterface->GetHit(WeaponBaseDamage, SecondBodyWeaponBoxHit.ImpactPoint);
+			HitInterface->GetHit(WeaponBaseDamage, SecondBodyWeaponBoxHit.ImpactPoint, SecondBodyWeaponBoxHit.GetActor()->GetActorLocation(), SecondBodyWeaponBoxHit.GetActor()->GetActorRotation(), GetActorLocation());
 		}
 
 		IgnoreActors.AddUnique(SecondBodyWeaponBoxHit.GetActor());
 	} 
 }
-*/
+

@@ -147,27 +147,7 @@ void ABaseCharacter::OnKickBoxOverlap(UPrimitiveComponent* OverlappedComponent, 
 		IgnoreActors.AddUnique(KickBoxHit.GetActor());
 	}
 }
-/**
-FName ABaseCharacter::GetAngle(const FVector& SelfLocation, const FRotator& SelfRotation, const FVector& TargetLocation)
-{
-	FRotator const LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SelfLocation, TargetLocation);
-	FRotator const FinalAngle = UKismetMathLibrary::NormalizedDeltaRotator(SelfRotation, LookAtRotation);
-	FName Section("Back");
-	if(FinalAngle.Yaw >= -45.f && FinalAngle.Yaw < 45.f)
-	{
-		Section = FName("Front");
-	}
-	else if (FinalAngle.Yaw >= -135.f && FinalAngle.Yaw < -45.f)
-	{
-		Section = FName("Right");
-	}
-	else if(FinalAngle.Yaw >= 45.f && FinalAngle.Yaw < 135.f)
-	{
-		Section = FName("Left");
-	}
-	return FName(Section);
-}
-*/
+
 void ABaseCharacter::GetHit(const float& Damage, const FVector& ImpactPoint,const FVector& TargetLocation, const FRotator& TargetRotation, const FVector& SelfLocation)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
